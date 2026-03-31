@@ -198,9 +198,23 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
 .sp-tab-content{display:none}
 .sp-tab-content.active{display:block}
 
+/* HAMBURGER */
+.hamburger{display:none;width:40px;height:40px;border-radius:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0;transition:all .3s}
+.hamburger:hover{background:rgba(201,168,76,0.2)}
+.hamburger span{display:block;width:20px;height:2px;background:#C9A84C;border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:rgba(10,14,26,0.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.mobile-menu.open{opacity:1;pointer-events:all}
+.mobile-menu .nav-link{font-size:18px;padding:16px 32px;width:100%;max-width:320px;justify-content:center;border-radius:12px}
+
 @media(max-width:768px){
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
-  .nav-links{display:none}
+  .nav-links{display:none!important}
+  .hamburger{display:flex}
+  .mobile-menu{display:flex}
   .section,.section-wide{padding:100px 20px 60px}
   .side-panel{width:100vw}
   .sp-header{padding:16px 20px}
@@ -239,8 +253,21 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
       <button class="nav-link" data-view="disclosure" onclick="showView('disclosure')">&#9989; Disclosure</button>
       <button class="nav-link" data-view="dashboard" onclick="showView('dashboard')">&#128202; Dashboard</button>
     </div>
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="nav-link active" data-view="home" onclick="mobileNav('home')">&#127968; Home</button>
+  <button class="nav-link" data-view="seller" onclick="mobileNav('seller')">&#128196; Seller Form</button>
+  <button class="nav-link" data-view="buyer" onclick="mobileNav('buyer')">&#128101; Buyer Form</button>
+  <button class="nav-link" data-view="insurance" onclick="mobileNav('insurance')">&#128737; Insurance</button>
+  <button class="nav-link" data-view="disclosure" onclick="mobileNav('disclosure')">&#9989; Disclosure</button>
+  <button class="nav-link" data-view="dashboard" onclick="mobileNav('dashboard')">&#128202; Dashboard</button>
+</div>
 
 <!-- ═══════════════════════ HOME ═══════════════════════ -->
 <div class="view active" id="view-home">
@@ -514,6 +541,23 @@ function showView(id) {
 window.addEventListener('scroll', () => {
   document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 20);
 });
+
+// ═══ MOBILE MENU ═══
+function toggleMobileMenu() {
+  document.getElementById('hamburgerBtn').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+}
+function mobileNav(view) {
+  showView(view);
+  document.getElementById('hamburgerBtn').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+  // Update active states in mobile menu
+  document.querySelectorAll('#mobileMenu .nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.view === view);
+  });
+}
 
 // ═══ FORM WIZARD ENGINE ═══
 function createField(label, placeholder, id, type, required, options) {
