@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiduciary Asset Protection Group — Land Trust Platform</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0A0E1A;color:#F1F5F9;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::selection{background:#C9A84C;color:#0A0E1A}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0A0E1A}
+::-webkit-scrollbar-thumb{background:#9A7B2E;border-radius:3px}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+a{text-decoration:none;color:inherit}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2)}50%{box-shadow:0 0 40px rgba(201,168,76,0.4)}}
+@keyframes pulseGreen{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)}50%{box-shadow:0 0 40px rgba(16,185,129,0.4)}}
+
+.fade-up{animation:fadeUp .8s ease-out forwards}
+.fd1{animation:fadeUp .8s ease-out .1s forwards;opacity:0}
+.fd2{animation:fadeUp .8s ease-out .2s forwards;opacity:0}
+.fd3{animation:fadeUp .8s ease-out .3s forwards;opacity:0}
+.fd4{animation:fadeUp .8s ease-out .4s forwards;opacity:0}
+.fd5{animation:fadeUp .8s ease-out .5s forwards;opacity:0}
+
+.shimmer-text{
+  background:linear-gradient(135deg,#C9A84C 0%,#E8D48B 50%,#C9A84C 100%);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 40px;transition:all .4s ease}
+.nav.scrolled{padding:12px 40px;background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #1E293B}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:14px;cursor:pointer}
+.nav-logo h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#C9A84C;line-height:1.1}
+.nav-logo span{font-size:10px;letter-spacing:3px;color:#94A3B8;text-transform:uppercase}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-link{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;background:transparent;border:1px solid transparent;color:#94A3B8;font-size:13px;font-weight:400;cursor:pointer;transition:all .3s ease;font-family:'DM Sans',sans-serif}
+.nav-link:hover{color:#C9A84C}
+.nav-link.active{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.3);color:#C9A84C;font-weight:600}
+
+/* BUTTONS */
+.btn{padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:10px;border:none}
+.btn-gold{background:#C9A84C;color:#0A0E1A}
+.btn-gold:hover{background:#E8D48B;box-shadow:0 0 30px rgba(201,168,76,0.4)}
+.btn-outline{background:transparent;color:#C9A84C;border:1px solid rgba(201,168,76,0.3)}
+.btn-outline:hover{box-shadow:0 0 20px rgba(201,168,76,0.15)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* CARDS */
+.card{padding:32px;border-radius:16px;background:#111827;border:1px solid #1E293B;transition:all .4s ease}
+.card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-4px);box-shadow:0 0 40px rgba(201,168,76,0.15)}
+
+/* FORM INPUTS */
+.field{margin-bottom:20px}
+.field label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#94A3B8;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.field label .req{color:#C9A84C}
+.field input,.field select,.field textarea{width:100%;padding:14px 16px;background:#0D1321;border:1px solid #1E293B;border-radius:8px;color:#F1F5F9;font-size:15px;outline:none;transition:all .3s ease}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#C9A84C;box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+.field textarea{resize:vertical}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+
+/* GRID HELPERS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* STEPS */
+.steps{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+.step-item{display:flex;align-items:center;gap:8px}
+.step-pill{display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:50px;border:1px solid #1E293B;transition:all .4s ease}
+.step-pill.active{background:rgba(201,168,76,0.15);border-color:#C9A84C}
+.step-pill.done{background:rgba(16,185,129,0.1);border-color:#10B981}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1px solid #64748B;color:#64748B;transition:all .3s ease}
+.step-pill.active .step-num{background:#C9A84C;color:#0A0E1A;border:none}
+.step-pill.done .step-num{background:#10B981;color:#fff;border:none}
+.step-label{font-size:13px;color:#64748B;white-space:nowrap}
+.step-pill.active .step-label{color:#C9A84C;font-weight:600}
+.step-pill.done .step-label{color:#10B981}
+.step-line{width:24px;height:2px;background:#1E293B}
+.step-line.done{background:#10B981}
+
+/* SECTIONS */
+.section{max-width:800px;margin:0 auto;padding:120px 40px 80px}
+.section-wide{max-width:1200px;margin:0 auto;padding:120px 40px 80px}
+.section-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;font-size:12px;font-weight:500;margin-bottom:16px;text-transform:uppercase;letter-spacing:1.5px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600}
+.section-sub{color:#94A3B8;margin-top:8px}
+
+/* FORM CARD */
+.form-card{background:#111827;border-radius:20px;padding:40px;border:1px solid #1E293B}
+.form-header{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.form-desc{color:#64748B;font-size:14px;margin-bottom:28px}
+.form-footer{display:flex;justify-content:space-between;margin-top:36px;padding-top:24px;border-top:1px solid #1E293B}
+
+/* ALERT BOXES */
+.alert{padding:16px 20px;border-radius:10px;display:flex;gap:12px;align-items:flex-start;margin-bottom:20px}
+.alert-gold{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3)}
+.alert-red{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3)}
+.alert p{font-size:13px;color:#94A3B8;line-height:1.6}
+.alert strong{color:#C9A84C}
+
+/* RULE ITEMS */
+.rule{padding:18px 22px;border-radius:12px;display:flex;gap:14px;align-items:flex-start}
+.rule p{font-size:14px;color:#F1F5F9;line-height:1.6}
+.rule-danger{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)}
+.rule-warning{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2)}
+.rule-info{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2)}
+.rule-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:7px}
+
+/* POLICY CARDS */
+.policy-card{padding:24px;border-radius:16px;background:#111827;border:1px solid #1E293B;cursor:pointer;transition:all .3s ease}
+.policy-card:hover{border-color:rgba(201,168,76,0.3)}
+.policy-card.open{box-shadow:0 0 30px rgba(201,168,76,0.1)}
+.policy-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+
+/* CHECK ITEMS */
+.check-card{padding:24px;border-radius:16px;background:#111827;border:1px solid #1E293B;transition:all .3s ease}
+.check-card.checked{border-color:#10B981}
+.check-box{width:28px;height:28px;border-radius:6px;border:2px solid #64748B;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s ease}
+.check-box.checked{background:#10B981;border-color:#10B981}
+.check-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:10px}
+.check-card.checked .check-title{color:#10B981}
+
+/* SIGNATURE */
+.sig-preview{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:#C9A84C;min-height:40px;border-bottom:2px solid rgba(201,168,76,0.3);padding-bottom:8px;margin-top:8px}
+
+/* DASHBOARD */
+.stat-card{padding:28px;border-radius:16px;background:#111827;border:1px solid #1E293B;transition:all .3s ease}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:4px}
+.stat-label{font-size:14px;color:#94A3B8;margin-bottom:4px}
+.stat-change{font-size:12px}
+
+.deal-row{padding:24px 28px;border-bottom:1px solid #1E293B;transition:all .3s ease;cursor:pointer}
+.deal-row:last-child{border-bottom:none}
+.deal-row:hover{background:#1A2236}
+.deal-id{font-size:12px;color:#64748B;font-family:monospace;background:#0D1321;padding:4px 10px;border-radius:4px}
+.deal-status{padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600}
+.progress-bar{flex:1;height:6px;background:#0D1321;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.doc-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 10px;border-radius:4px}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:80px 40px}
+.success-icon{width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:pulseGreen 2s ease infinite;font-size:40px}
+
+/* FOOTER */
+footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
+
+/* HIDDEN SECTIONS */
+.view{display:none}
+.view.active{display:block}
+
+/* SVG SHIELD INLINE */
+.shield-svg{display:inline-block;vertical-align:middle}
+
+@media(max-width:768px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .section,.section-wide{padding:100px 20px 60px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showView('home')">
+      <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A84C"/><stop offset="50%" stop-color="#E8D48B"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient></defs>
+        <path d="M50 5 L90 25 L90 55 C90 75 70 92 50 98 C30 92 10 75 10 55 L10 25 Z" fill="url(#sg)"/>
+        <path d="M50 12 L83 29 L83 55 C83 72 66 86 50 91 C34 86 17 72 17 55 L17 29 Z" fill="url(#ig)"/>
+        <text x="50" y="62" text-anchor="middle" fill="#E8D48B" font-size="36" font-weight="700" font-family="Cormorant Garamond,serif">F</text>
+      </svg>
+      <div>
+        <h2>FIDUCIARY ASSET</h2>
+        <span>Protection Group LLC</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" data-view="home" onclick="showView('home')">&#127968; Home</button>
+      <button class="nav-link" data-view="seller" onclick="showView('seller')">&#128196; Seller Form</button>
+      <button class="nav-link" data-view="buyer" onclick="showView('buyer')">&#128101; Buyer Form</button>
+      <button class="nav-link" data-view="insurance" onclick="showView('insurance')">&#128737; Insurance</button>
+      <button class="nav-link" data-view="disclosure" onclick="showView('disclosure')">&#9989; Disclosure</button>
+      <button class="nav-link" data-view="dashboard" onclick="showView('dashboard')">&#128202; Dashboard</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HOME ═══════════════════════ -->
+<div class="view active" id="view-home">
+  <div style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(201,168,76,0.08) 0%,transparent 60%)"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 80%,rgba(37,99,235,0.06) 0%,transparent 60%)"></div>
+    <div style="position:absolute;top:10%;right:5%;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,168,76,0.06);animation:float 8s ease-in-out infinite"></div>
+    <div style="position:absolute;bottom:10%;left:5%;width:300px;height:300px;border-radius:50%;border:1px solid rgba(37,99,235,0.06);animation:float 6s ease-in-out infinite 1s"></div>
+
+    <div style="max-width:1200px;margin:0 auto;padding:120px 40px 80px;position:relative;z-index:1">
+      <div class="fade-up" style="margin-bottom:24px">
+        <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128737; Land Trust Document Platform</span>
+      </div>
+      <h1 class="fd1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,82px);font-weight:300;line-height:1.05;margin-bottom:28px;max-width:900px">
+        Protect Your <br><span class="shimmer-text" style="font-weight:700">Real Estate Investments</span>
+      </h1>
+      <p class="fd2" style="font-size:20px;color:#94A3B8;line-height:1.7;max-width:620px;margin-bottom:48px">
+        The all-in-one digital platform for subject-to property acquisitions. Streamline land trust filings, protect against due-on-sale clauses, and manage every transaction with confidence.
+      </p>
+      <div class="fd3" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:80px">
+        <button class="btn btn-gold" onclick="showView('seller')">Start New Transaction &#8594;</button>
+        <button class="btn btn-outline" onclick="showView('dashboard')">View Dashboard &#128202;</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+        <div class="card fd2">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:22px">&#128196;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:10px">Seller & Buyer Forms</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Guided digital intake replacing paper forms. Auto-validates all required fields.</p>
+        </div>
+        <div class="card fd3">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:22px">&#128737;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:10px">Insurance Guidance</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Step-by-step insurance instructions ensuring proper coverage from day one.</p>
+        </div>
+        <div class="card fd4">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:22px">&#9989;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:10px">E-Sign Disclosure</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Digital acknowledgment agreement with built-in e-signature capture.</p>
+        </div>
+        <div class="card fd5">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:22px">&#128202;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:10px">Deal Dashboard</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Track every transaction, monitor progress, and manage your entire portfolio.</p>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:0 auto 60px;padding:0 40px;width:100%">
+      <div class="fd5" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#1E293B;border-radius:16px;overflow:hidden;border:1px solid #1E293B">
+        <div style="padding:32px;background:#111827;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#C9A84C;margin-bottom:4px">500+</div>
+          <div style="font-size:13px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px">Trusts Filed</div>
+        </div>
+        <div style="padding:32px;background:#111827;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#C9A84C;margin-bottom:4px">44+</div>
+          <div style="font-size:13px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px">Years Experience</div>
+        </div>
+        <div style="padding:32px;background:#111827;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#C9A84C;margin-bottom:4px">100%</div>
+          <div style="font-size:13px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px">Digital Process</div>
+        </div>
+        <div style="padding:32px;background:#111827;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#C9A84C;margin-bottom:4px">24hr</div>
+          <div style="font-size:13px;color:#94A3B8;text-transform:uppercase;letter-spacing:1px">Turnaround</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SELLER FORM ═══════════════════════ -->
+<div class="view" id="view-seller">
+  <div class="section fade-up">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128196; Seller Intake</span>
+      <h2 class="section-title">Seller Form</h2>
+      <p class="section-sub">Collect all property and seller details for the land trust filing</p>
+    </div>
+    <div class="steps" id="seller-steps"></div>
+    <div class="form-card" id="seller-form-card"></div>
+    <div id="seller-success" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BUYER FORM ═══════════════════════ -->
+<div class="view" id="view-buyer">
+  <div class="section fade-up">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-tag" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA">&#128101; Buyer Intake</span>
+      <h2 class="section-title">Buyer Form</h2>
+      <p class="section-sub">Collect buyer, beneficiary, and transaction coordinator details</p>
+    </div>
+    <div class="steps" id="buyer-steps"></div>
+    <div class="form-card" id="buyer-form-card"></div>
+    <div id="buyer-success" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ INSURANCE ═══════════════════════ -->
+<div class="view" id="view-insurance">
+  <div style="max-width:900px;margin:0 auto;padding:120px 40px 80px" class="fade-up">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-tag" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10B981">&#128737; Insurance Guidance</span>
+      <h2 class="section-title">Insurance Instructions</h2>
+      <p class="section-sub">Critical insurance requirements for subject-to purchases</p>
+    </div>
+
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:20px"><span style="color:#C9A84C">01</span> Select Your Policy Type</h3>
+    <div class="grid-2" style="margin-bottom:48px">
+      <div class="policy-card" onclick="togglePolicy(this)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="policy-icon" style="background:rgba(37,99,235,0.15);color:#2563EB">&#127968;</div>
+          <div style="flex:1"><div style="font-weight:600;font-size:15px">Landlord Policy</div></div>
+          <span style="font-size:18px;color:#64748B;transition:transform .3s" class="chevron">&#9660;</span>
+        </div>
+        <div class="policy-detail" style="display:none;padding-left:58px;margin-top:12px"><p style="font-size:14px;color:#94A3B8;line-height:1.6">Required if you plan on renting the property.</p></div>
+      </div>
+      <div class="policy-card" onclick="togglePolicy(this)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="policy-icon" style="background:rgba(139,92,246,0.15);color:#8B5CF6">&#9889;</div>
+          <div style="flex:1"><div style="font-weight:600;font-size:15px">Builder's All Risk</div></div>
+          <span style="font-size:18px;color:#64748B;transition:transform .3s" class="chevron">&#9660;</span>
+        </div>
+        <div class="policy-detail" style="display:none;padding-left:58px;margin-top:12px"><p style="font-size:14px;color:#94A3B8;line-height:1.6">Required if the property needs to be renovated first.</p></div>
+      </div>
+      <div class="policy-card" onclick="togglePolicy(this)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="policy-icon" style="background:rgba(236,72,153,0.15);color:#EC4899">&#127970;</div>
+          <div style="flex:1"><div style="font-weight:600;font-size:15px">Vacant Home Policy</div></div>
+          <span style="font-size:18px;color:#64748B;transition:transform .3s" class="chevron">&#9660;</span>
+        </div>
+        <div class="policy-detail" style="display:none;padding-left:58px;margin-top:12px"><p style="font-size:14px;color:#94A3B8;line-height:1.6">Required if the property will be vacant or up for sale.</p></div>
+      </div>
+      <div class="policy-card" onclick="togglePolicy(this)">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="policy-icon" style="background:rgba(16,185,129,0.15);color:#10B981">&#128737;</div>
+          <div style="flex:1"><div style="font-weight:600;font-size:15px">Homeowner's Policy</div></div>
+          <span style="font-size:18px;color:#64748B;transition:transform .3s" class="chevron">&#9660;</span>
+        </div>
+        <div class="policy-detail" style="display:none;padding-left:58px;margin-top:12px"><p style="font-size:14px;color:#94A3B8;line-height:1.6">If you will live there as Beneficiary. Have "Beneficiary Domiciles" on the deed.</p></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;margin-bottom:20px"><span style="color:#C9A84C">02</span> Critical Insurance Rules</h3>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:48px">
+      <div class="rule rule-danger"><div class="rule-dot" style="background:#EF4444"></div><p><strong>Do NOT</strong> use the existing Homeowner's policy — you are not the insured as the deed has changed.</p></div>
+      <div class="rule rule-danger"><div class="rule-dot" style="background:#EF4444"></div><p><strong>Do NOT</strong> have 2 policies existing simultaneously — your claim can be denied.</p></div>
+      <div class="rule rule-warning"><div class="rule-dot" style="background:#F59E0B"></div><p>Have your policy started <strong>the day of closing</strong>.</p></div>
+      <div class="rule rule-warning"><div class="rule-dot" style="background:#F59E0B"></div><p><strong>Do NOT</strong> cancel existing policy until you close — closings get delayed.</p></div>
+      <div class="rule rule-info"><div class="rule-dot" style="background:#60A5FA"></div><p>The Insured is the Trustee: <strong>Fiduciary Asset Protection Group, LLC</strong> (not the Trust — the Trust is a document).</p></div>
+      <div class="rule rule-info"><div class="rule-dot" style="background:#60A5FA"></div><p>Name the <strong>Bank as the 1st mortgagee</strong>.</p></div>
+      <div class="rule rule-warning"><div class="rule-dot" style="background:#F59E0B"></div><p>Sellers as <strong>Additional Interest</strong> (NOT Additionally Insured) — seller's name will not be on insurance claim check.</p></div>
+      <div class="rule rule-info"><div class="rule-dot" style="background:#60A5FA"></div><p>Cover <strong>Beneficiary</strong> with General Liability Insurance — declaration page is <strong>NOT</strong> sent to the bank.</p></div>
+      <div class="rule rule-info"><div class="rule-dot" style="background:#60A5FA"></div><p>Cover the <strong>Seller</strong> with General Liability Insurance — and <strong>send that to the bank</strong>.</p></div>
+      <div class="rule rule-info"><div class="rule-dot" style="background:#60A5FA"></div><p>If existing policy is escrowed (PiTi), have the insurance company <strong>send the invoice to the bank</strong> to be paid.</p></div>
+      <div class="rule rule-warning"><div class="rule-dot" style="background:#F59E0B"></div><p>You must have a <strong>Durable Power of Attorney (POA)</strong> to sign claim checks with the seller's name.</p></div>
+    </div>
+
+    <div style="padding:32px;border-radius:16px;background:rgba(239,68,68,0.08);border:2px solid #EF4444;text-align:center;animation:glow 3s ease infinite">
+      <div style="font-size:40px;margin-bottom:12px">&#9888;&#65039;</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#EF4444;margin-bottom:8px">YOU SHOULD NEVER CLOSE WITHOUT INSURANCE</h3>
+      <p style="color:#94A3B8;font-size:15px">The existing seller's insurance does NOT cover you.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DISCLOSURE ═══════════════════════ -->
+<div class="view" id="view-disclosure">
+  <div style="max-width:860px;margin:0 auto;padding:120px 40px 80px" class="fade-up">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#9989; E-Signature</span>
+      <h2 class="section-title">Disclosure & Acknowledgment</h2>
+      <p class="section-sub">Review each section and provide your electronic signature</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px" id="disclosure-checks"></div>
+    <div class="form-card" id="sig-area" style="opacity:0.4;pointer-events:none;transition:all .4s ease">
+      <h3 class="form-header">&#128274; Electronic Signature</h3>
+      <div class="grid-2" style="margin-top:24px">
+        <div>
+          <div class="field"><label>CLIENT SIGNATURE (FULL NAME) <span class="req">*</span></label><input type="text" id="sig1" placeholder="John Doe" oninput="updateSig()"></div>
+          <div class="sig-preview" id="sig1-preview"></div>
+        </div>
+        <div>
+          <div class="field"><label>CLIENT 2 SIGNATURE (OPTIONAL)</label><input type="text" id="sig2" placeholder="Jane Doe" oninput="updateSig()"></div>
+          <div class="sig-preview" id="sig2-preview"></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:32px">
+        <button class="btn btn-gold" id="signBtn" disabled onclick="signDisclosure()">Sign Agreement &#10003;</button>
+      </div>
+    </div>
+    <div id="disclosure-success" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+<div class="view" id="view-dashboard">
+  <div class="section-wide fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px">
+      <div>
+        <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128202; Portfolio Overview</span>
+        <h2 class="section-title">Deal Dashboard</h2>
+      </div>
+      <button class="btn btn-gold" onclick="showView('seller')">New Transaction &#8594;</button>
+    </div>
+    <div class="grid-4" style="margin-bottom:40px">
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(201,168,76,0.12)">&#128200;</div><div class="stat-value">5</div><div class="stat-label">Active Deals</div><div class="stat-change" style="color:#C9A84C">+2 this month</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.12)">&#10003;</div><div class="stat-value">1</div><div class="stat-label">Ready to Close</div><div class="stat-change" style="color:#10B981">1 pending review</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.12)">&#9888;</div><div class="stat-value">1</div><div class="stat-label">Pending Insurance</div><div class="stat-change" style="color:#F59E0B">Action needed</div></div>
+      <div class="stat-card"><div class="stat-icon" style="background:rgba(96,165,250,0.12)">&#127942;</div><div class="stat-value">23</div><div class="stat-label">Completed (YTD)</div><div class="stat-change" style="color:#60A5FA">+15% vs last year</div></div>
+    </div>
+    <div style="background:#111827;border-radius:20px;border:1px solid #1E293B;overflow:hidden">
+      <div style="padding:24px 28px;border-bottom:1px solid #1E293B;display:flex;justify-content:space-between;align-items:center">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600">Active Transactions</h3>
+        <span style="font-size:13px;color:#64748B">5 deals</span>
+      </div>
+      <div id="deals-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px">
+    <svg width="36" height="36" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A84C"/><stop offset="50%" stop-color="#E8D48B"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient><linearGradient id="ig2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient></defs><path d="M50 5 L90 25 L90 55 C90 75 70 92 50 98 C30 92 10 75 10 55 L10 25 Z" fill="url(#sg2)"/><path d="M50 12 L83 29 L83 55 C83 72 66 86 50 91 C34 86 17 72 17 55 L17 29 Z" fill="url(#ig2)"/><text x="50" y="62" text-anchor="middle" fill="#E8D48B" font-size="36" font-weight="700" font-family="Cormorant Garamond,serif">F</text></svg>
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#C9A84C">FIDUCIARY ASSET</div>
+      <div style="font-size:9px;letter-spacing:2.5px;color:#64748B;text-transform:uppercase">Protection Group LLC</div>
+    </div>
+  </div>
+  <div style="font-size:14px;color:#94A3B8;margin-bottom:8px">Eric Sandhaus (407) 335-6591 &bull; Barry Sandhaus (407) 592-4166</div>
+  <div style="font-size:13px;color:#64748B">Eric@FiduciaryAssetProtectionGroupLLC.com &bull; Barry@FiduciaryAssetProtectionGroupLLC.com</div>
+  <div style="font-size:12px;color:#64748B;margin-top:24px">&copy; 2026 Fiduciary Asset Protection Group, LLC. All rights reserved. &bull; Document Assistance Only — Not Legal Advice</div>
+</footer>
+
+<script>
+// ═══ VIEW MANAGEMENT ═══
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.view === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══ NAV SCROLL ═══
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ═══ FORM WIZARD ENGINE ═══
+function createField(label, placeholder, id, type, required, options) {
+  let html = '<div class="field"><label>' + label;
+  if (required) html += ' <span class="req">*</span>';
+  html += '</label>';
+  if (options) {
+    html += '<select id="' + id + '"><option value="">Select...</option>';
+    options.forEach(o => html += '<option value="' + o + '">' + o + '</option>');
+    html += '</select>';
+  } else if (type === 'textarea') {
+    html += '<textarea id="' + id + '" placeholder="' + (placeholder||'') + '" rows="4"></textarea>';
+  } else {
+    html += '<input type="' + (type||'text') + '" id="' + id + '" placeholder="' + (placeholder||'') + '">';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ═══ SELLER FORM ═══
+const sellerSteps = ['Property Details', 'Seller Info', 'Mortgage & Lender', 'Legal Description'];
+let sellerStep = 0;
+
+function renderSellerSteps() {
+  let h = '';
+  sellerSteps.forEach((s, i) => {
+    let cls = i === sellerStep ? 'active' : i < sellerStep ? 'done' : '';
+    h += '<div class="step-item"><div class="step-pill ' + cls + '"><div class="step-num">' + (i < sellerStep ? '&#10003;' : (i+1)) + '</div><span class="step-label">' + s + '</span></div></div>';
+    if (i < sellerSteps.length - 1) h += '<div class="step-line' + (i < sellerStep ? ' done' : '') + '"></div>';
+  });
+  document.getElementById('seller-steps').innerHTML = h;
+}
+
+function renderSellerForm() {
+  let h = '';
+  if (sellerStep === 0) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128205; Property Details</h3>';
+    h += '<p class="form-desc">Enter the subject property information exactly as it appears on the deed.</p>';
+    h += createField('Property Address', '123 Main St', 's-addr', 'text', true);
+    h += '<div class="grid-2">' + createField('City', 'Orlando', 's-city', 'text', true) + createField('County', 'Orange', 's-county', 'text', true) + '</div>';
+    h += '<div class="grid-3">' + createField('State', '', 's-state', 'text', true, ['FL','TX','CA','GA','NC','OH','AZ','TN','CO','NY']) + createField('Zip Code', '32801', 's-zip', 'text', true) + createField('Tax ID / APA #', '12-3456-789', 's-tax') + '</div>';
+    h += createField('Names on Deed', 'John & Jane Doe', 's-deed', 'text', true);
+  } else if (sellerStep === 1) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128100; Seller Information</h3>';
+    h += '<p class="form-desc">Provide the seller\'s contact and legal information.</p>';
+    h += createField('Full Legal Name(s)', 'John Michael Doe', 's-name', 'text', true);
+    h += createField('Forwarding Address', '456 Oak Ave, Orlando, FL', 's-fwd', 'text', true);
+    h += '<div class="grid-2">' + createField('Email', 'seller@email.com', 's-email', 'email', true) + createField('Phone', '(407) 555-1234', 's-phone', 'tel', true) + '</div>';
+  } else if (sellerStep === 2) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128179; Mortgage & Lender</h3>';
+    h += '<p class="form-desc">Enter the existing mortgage information for the subject property.</p>';
+    h += createField('Names on Mortgage Account', 'John & Jane Doe', 's-mort', 'text', true);
+    h += createField('Bank / Mortgage Company', 'Wells Fargo', 's-bank', 'text', true);
+    h += '<div class="grid-2">' + createField('Monthly Payment', '$1,450.00', 's-pmt', 'text', true) + createField('Loan / Account #', 'XXXX-1234', 's-loan', 'text', true) + '</div>';
+    h += '<h4 style="font-family:Cormorant Garamond,serif;font-size:18px;font-weight:600;margin:24px 0 16px;color:#C9A84C">Lender Payment Info</h4>';
+    h += '<div class="grid-2">' + createField('Pay by Mail', 'P.O. Box 12345', 's-paymail') + createField('Pay by Phone', '1-800-555-0000', 's-payphone', 'tel') + '</div>';
+    h += createField('Online Payment Website', 'www.wellsfargo.com', 's-payweb');
+    h += '<h4 style="font-family:Cormorant Garamond,serif;font-size:18px;font-weight:600;margin:24px 0 16px;color:#C9A84C">Servicing Company (if applicable)</h4>';
+    h += '<div class="grid-2">' + createField('Payment Options', 'Online, Phone, Mail', 's-svc') + createField('Website', 'www.servicer.com', 's-svcweb') + '</div>';
+  } else if (sellerStep === 3) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128196; Legal Description</h3>';
+    h += '<p class="form-desc">Paste the legal description from the last page of the title commitment.</p>';
+    h += createField('Legal Description', 'LOT 15, BLOCK 3, OF SUNRISE ESTATES...', 's-legal', 'textarea', true);
+    h += '<div class="alert alert-gold"><div style="font-size:18px;flex-shrink:0">&#9888;&#65039;</div><p>Found on the <strong>last page of the title commitment</strong>. Copy exactly as written — do not paraphrase or abbreviate.</p></div>';
+  }
+  h += '<div class="form-footer">';
+  h += sellerStep > 0 ? '<button class="btn btn-outline" onclick="sellerPrev()">&#8592; Back</button>' : '<div></div>';
+  h += sellerStep < 3 ? '<button class="btn btn-gold" onclick="sellerNext()">Continue &#8594;</button>' : '<button class="btn btn-gold" onclick="sellerSubmit()">Submit Seller Form &#10003;</button>';
+  h += '</div>';
+  document.getElementById('seller-form-card').innerHTML = h;
+  document.getElementById('seller-form-card').style.display = 'block';
+  document.getElementById('seller-success').style.display = 'none';
+}
+
+function sellerNext() { sellerStep = Math.min(3, sellerStep + 1); renderSellerSteps(); renderSellerForm(); }
+function sellerPrev() { sellerStep = Math.max(0, sellerStep - 1); renderSellerSteps(); renderSellerForm(); }
+function sellerSubmit() {
+  document.getElementById('seller-form-card').style.display = 'none';
+  document.getElementById('seller-steps').innerHTML = '';
+  document.getElementById('seller-success').style.display = 'block';
+  document.getElementById('seller-success').innerHTML = '<div class="success-screen fade-up"><div class="success-icon">&#10003;</div><h2 style="font-family:Cormorant Garamond,serif;font-size:36px;font-weight:600;margin-bottom:12px">Seller Form Submitted</h2><p style="color:#94A3B8;font-size:16px;margin-bottom:32px">All property and seller information has been securely captured and is ready for processing.</p><button class="btn btn-gold" onclick="sellerStep=0;renderSellerSteps();renderSellerForm()">Start New Form</button></div>';
+}
+
+// ═══ BUYER FORM ═══
+const buyerSteps = ['Property & Buyer', 'Beneficiary Info', 'Trustee & Coordinator', 'Title Company'];
+let buyerStep = 0;
+
+function renderBuyerSteps() {
+  let h = '';
+  buyerSteps.forEach((s, i) => {
+    let cls = i === buyerStep ? 'active' : i < buyerStep ? 'done' : '';
+    h += '<div class="step-item"><div class="step-pill ' + cls + '"><div class="step-num">' + (i < buyerStep ? '&#10003;' : (i+1)) + '</div><span class="step-label">' + s + '</span></div></div>';
+    if (i < buyerSteps.length - 1) h += '<div class="step-line' + (i < buyerStep ? ' done' : '') + '"></div>';
+  });
+  document.getElementById('buyer-steps').innerHTML = h;
+}
+
+function renderBuyerForm() {
+  let h = '';
+  if (buyerStep === 0) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#127968; Property & Buyer</h3>';
+    h += createField('Property Address', '123 Main St, Orlando, FL 32801', 'b-addr', 'text', true);
+    h += createField('Expected Closing Date', '', 'b-date', 'date', true);
+    h += createField('Company Name (if applicable)', 'ABC Investments LLC', 'b-co');
+    h += '<div class="grid-2">' + createField("Member's Name", 'John Doe', 'b-name', 'text', true) + createField('Email', 'john@email.com', 'b-email', 'email', true) + '</div>';
+    h += createField('Cell Phone', '(407) 555-1234', 'b-phone', 'tel', true);
+    h += '<div class="grid-2">' + createField('Primary Residence?', '', 'b-res', 'text', true, ['Yes','No']) + createField('Rental Type?', '', 'b-rent', 'text', true, ['Long-term Rental','Short-term Rental','Not a Rental']) + '</div>';
+  } else if (buyerStep === 1) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128101; Beneficiary Information</h3>';
+    h += '<div class="alert alert-gold"><div style="font-size:18px;flex-shrink:0">&#9888;&#65039;</div><p>If buyers will be living there, they can be Beneficiaries. If rental, use an <strong>LLC that owns nothing and does no business</strong>.</p></div>';
+    h += createField('Beneficiaries Names', 'John Doe, Jane Doe', 'b-benef', 'text', true);
+    h += createField('LLC Beneficiary Name', 'Sunrise Holdings LLC', 'b-llc');
+    h += createField('Mailing Address', '789 Pine Rd, Orlando, FL', 'b-baddr', 'text', true);
+    h += createField('LLC Email', 'admin@llc.com', 'b-llcmail', 'email');
+    h += createField('Successor Beneficiaries', 'Jane Doe', 'b-succ');
+  } else if (buyerStep === 2) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#128737; Trustee & Coordinator</h3>';
+    h += '<div style="padding:20px;border-radius:12px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.3);margin-bottom:28px">';
+    h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><svg width="32" height="32" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="sg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A84C"/><stop offset="50%" stop-color="#E8D48B"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient><linearGradient id="ig3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient></defs><path d="M50 5 L90 25 L90 55 C90 75 70 92 50 98 C30 92 10 75 10 55 L10 25 Z" fill="url(#sg3)"/><path d="M50 12 L83 29 L83 55 C83 72 66 86 50 91 C34 86 17 72 17 55 L17 29 Z" fill="url(#ig3)"/><text x="50" y="62" text-anchor="middle" fill="#E8D48B" font-size="36" font-weight="700" font-family="Cormorant Garamond,serif">F</text></svg>';
+    h += '<div><div style="font-weight:600;color:#C9A84C">Fiduciary Asset Protection Group, LLC</div><div style="font-size:13px;color:#94A3B8">Appointed Trustee</div></div></div>';
+    h += '<p style="font-size:13px;color:#64748B;line-height:1.6">You may name a successor trustee should we resign.</p></div>';
+    h += createField('Successor Trustee', 'Jane Doe or Attorney', 'b-trustee');
+    h += '<h4 style="font-family:Cormorant Garamond,serif;font-size:18px;font-weight:600;margin:24px 0 16px;color:#C9A84C">Transaction Coordinator</h4>';
+    h += '<div class="grid-2">' + createField('Phone', '(407) 555-0000', 'b-tcphone', 'tel') + createField('Email', 'tc@company.com', 'b-tcmail', 'email') + '</div>';
+  } else if (buyerStep === 3) {
+    h += '<h3 class="form-header" style="color:#C9A84C">&#127970; Title Company</h3>';
+    h += createField('Title Company Phone', '(407) 555-0000', 'b-tphone', 'tel', true);
+    h += createField('Title Company Email', 'closing@titleco.com', 'b-temail', 'email', true);
+    h += createField('Title Agent Name', 'Sarah Johnson', 'b-tagent', 'text', true);
+    h += '<div class="grid-2">' + createField('Agent Phone', '(407) 555-0001', 'b-aphone', 'tel') + createField('Agent Email', 'sarah@titleco.com', 'b-amail', 'email') + '</div>';
+  }
+  h += '<div class="form-footer">';
+  h += buyerStep > 0 ? '<button class="btn btn-outline" onclick="buyerPrev()">&#8592; Back</button>' : '<div></div>';
+  h += buyerStep < 3 ? '<button class="btn btn-gold" onclick="buyerNext()">Continue &#8594;</button>' : '<button class="btn btn-gold" onclick="buyerSubmit()">Submit Buyer Form &#10003;</button>';
+  h += '</div>';
+  document.getElementById('buyer-form-card').innerHTML = h;
+  document.getElementById('buyer-form-card').style.display = 'block';
+  document.getElementById('buyer-success').style.display = 'none';
+}
+
+function buyerNext() { buyerStep = Math.min(3, buyerStep + 1); renderBuyerSteps(); renderBuyerForm(); }
+function buyerPrev() { buyerStep = Math.max(0, buyerStep - 1); renderBuyerSteps(); renderBuyerForm(); }
+function buyerSubmit() {
+  document.getElementById('buyer-form-card').style.display = 'none';
+  document.getElementById('buyer-steps').innerHTML = '';
+  document.getElementById('buyer-success').style.display = 'block';
+  document.getElementById('buyer-success').innerHTML = '<div class="success-screen fade-up"><div class="success-icon">&#10003;</div><h2 style="font-family:Cormorant Garamond,serif;font-size:36px;font-weight:600;margin-bottom:12px">Buyer Form Submitted</h2><p style="color:#94A3B8;font-size:16px;margin-bottom:32px">All buyer and beneficiary information has been securely captured.</p><button class="btn btn-gold" onclick="buyerStep=0;renderBuyerSteps();renderBuyerForm()">Start New Form</button></div>';
+}
+
+// ═══ INSURANCE POLICY TOGGLE ═══
+function togglePolicy(el) {
+  const detail = el.querySelector('.policy-detail');
+  const chev = el.querySelector('.chevron');
+  const isOpen = detail.style.display === 'block';
+  document.querySelectorAll('.policy-detail').forEach(d => d.style.display = 'none');
+  document.querySelectorAll('.policy-card .chevron').forEach(c => c.style.transform = 'rotate(0)');
+  document.querySelectorAll('.policy-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) {
+    detail.style.display = 'block';
+    chev.style.transform = 'rotate(180deg)';
+    el.classList.add('open');
+  }
+}
+
+// ═══ DISCLOSURE ═══
+const discSections = [
+  { key: 'scope', title: '1. Scope of Service', text: 'This Agreement is entered into between Fiduciary Asset Protection Group LLC and the undersigned Client to ensure the Client understands the scope and nature of forms provided for the creation of a Land Trust for acquiring or holding real estate.' },
+  { key: 'legal', title: '2. No Legal Advice Provided', text: 'The Company and its representatives are not attorneys. We do not provide legal advice. Information is based on the experience of Barry Sandhaus (44+ years) and Eric Sandhaus (15 years).' },
+  { key: 'forms', title: '3. Land Trust Forms', text: 'Forms were written by a qualified attorney who specialized in Land Trusts. The Company has legally purchased and obtained these forms for client use.' },
+  { key: 'liability', title: '4. No Liability', text: 'The Company shall not be held liable for any actions, outcomes, or decisions made by the Client. All decisions are at the Client\'s own discretion and risk.' },
+  { key: 'construction', title: '5. No Construction Against Drafter', text: 'This provision survives indefinitely after COE. Ambiguities shall not be resolved against the drafting party.' },
+];
+let discChecked = {};
+
+function renderDisclosure() {
+  let h = '';
+  discSections.forEach(s => {
+    const chk = discChecked[s.key];
+    h += '<div class="check-card' + (chk ? ' checked' : '') + '">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">';
+    h += '<div style="flex:1"><h4 class="check-title">' + s.title + '</h4><p style="font-size:14px;color:#94A3B8;line-height:1.7">' + s.text + '</p></div>';
+    h += '<div class="check-box' + (chk ? ' checked' : '') + '" onclick="toggleDisc(\'' + s.key + '\')">' + (chk ? '&#10003;' : '') + '</div>';
+    h += '</div></div>';
+  });
+  document.getElementById('disclosure-checks').innerHTML = h;
+  const allChecked = discSections.every(s => discChecked[s.key]);
+  const sigArea = document.getElementById('sig-area');
+  sigArea.style.opacity = allChecked ? '1' : '0.4';
+  sigArea.style.pointerEvents = allChecked ? 'all' : 'none';
+}
+
+function toggleDisc(key) {
+  discChecked[key] = !discChecked[key];
+  renderDisclosure();
+}
+
+function updateSig() {
+  document.getElementById('sig1-preview').textContent = document.getElementById('sig1').value;
+  document.getElementById('sig2-preview').textContent = document.getElementById('sig2').value;
+  document.getElementById('signBtn').disabled = !document.getElementById('sig1').value;
+}
+
+function signDisclosure() {
+  const name1 = document.getElementById('sig1').value;
+  const name2 = document.getElementById('sig2').value;
+  document.getElementById('sig-area').style.display = 'none';
+  document.getElementById('disclosure-checks').style.display = 'none';
+  document.getElementById('disclosure-success').style.display = 'block';
+  document.getElementById('disclosure-success').innerHTML = '<div class="success-screen fade-up"><div class="success-icon">&#10003;</div><h2 style="font-family:Cormorant Garamond,serif;font-size:36px;font-weight:600;margin-bottom:12px">Agreement Signed</h2><p style="color:#94A3B8;font-size:16px;margin-bottom:8px">Digitally signed and recorded.</p><p style="color:#64748B;font-size:14px;margin-bottom:32px">Signed by: ' + name1 + (name2 ? ' & ' + name2 : '') + ' on ' + new Date().toLocaleDateString() + '</p><button class="btn btn-gold" onclick="resetDisclosure()">Start New Agreement</button></div>';
+}
+
+function resetDisclosure() {
+  discChecked = {};
+  document.getElementById('sig-area').style.display = 'block';
+  document.getElementById('disclosure-checks').style.display = 'flex';
+  document.getElementById('disclosure-success').style.display = 'none';
+  document.getElementById('sig1').value = '';
+  document.getElementById('sig2').value = '';
+  document.getElementById('sig1-preview').textContent = '';
+  document.getElementById('sig2-preview').textContent = '';
+  document.getElementById('signBtn').disabled = true;
+  renderDisclosure();
+}
+
+// ═══ DASHBOARD ═══
+function renderDeals() {
+  const deals = [
+    { id:'FT-2026-001', prop:'1423 Sunset Blvd, Orlando, FL', seller:'James & Mary Wilson', buyer:'Sunrise Holdings LLC', status:'In Progress', statusColor:'#C9A84C', progress:75, f:{s:1,b:1,i:0,d:0} },
+    { id:'FT-2026-002', prop:'890 Palm Ave, Tampa, FL', seller:'Robert Chen', buyer:'Coastal Investments LLC', status:'Pending Insurance', statusColor:'#F59E0B', progress:50, f:{s:1,b:1,i:0,d:0} },
+    { id:'FT-2026-003', prop:'2100 Lake Dr, Jacksonville, FL', seller:'Patricia Gomez', buyer:'David Kim', status:'Ready to Close', statusColor:'#10B981', progress:100, f:{s:1,b:1,i:1,d:1} },
+    { id:'FT-2026-004', prop:'567 Magnolia St, Miami, FL', seller:'Thomas & Linda Park', buyer:'Palmetto Capital LLC', status:'New', statusColor:'#60A5FA', progress:25, f:{s:1,b:0,i:0,d:0} },
+    { id:'FT-2026-005', prop:'3344 Cypress Ln, Sarasota, FL', seller:'Angela Foster', buyer:'Bayshore Properties LLC', status:'Under Review', statusColor:'#A78BFA', progress:60, f:{s:1,b:1,i:1,d:0} },
+  ];
+  let h = '';
+  deals.forEach(d => {
+    const pColor = d.progress === 100 ? '#10B981' : '#C9A84C';
+    h += '<div class="deal-row">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">';
+    h += '<div style="display:flex;align-items:center;gap:16px"><span class="deal-id">' + d.id + '</span><div><div style="font-weight:600;font-size:15px;margin-bottom:2px">' + d.prop + '</div><div style="font-size:13px;color:#94A3B8">Seller: ' + d.seller + ' &rarr; Buyer: ' + d.buyer + '</div></div></div>';
+    h += '<span class="deal-status" style="background:' + d.statusColor + '15;color:' + d.statusColor + ';border:1px solid ' + d.statusColor + '33">' + d.status + '</span>';
+    h += '</div>';
+    h += '<div style="display:flex;align-items:center;gap:16px"><div class="progress-bar"><div class="progress-fill" style="width:' + d.progress + '%;background:' + (d.progress===100?'#10B981':'linear-gradient(90deg,#C9A84C,#E8D48B)') + '"></div></div><span style="font-size:13px;color:#64748B;font-weight:600;min-width:40px;text-align:right">' + d.progress + '%</span></div>';
+    h += '<div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">';
+    [{k:'s',l:'Seller Form'},{k:'b',l:'Buyer Form'},{k:'i',l:'Insurance'},{k:'d',l:'Disclosure'}].forEach(f => {
+      const done = d.f[f.k];
+      h += '<span class="doc-tag" style="background:' + (done?'rgba(16,185,129,0.1)':'rgba(100,116,139,0.1)') + ';color:' + (done?'#10B981':'#64748B') + '">' + (done?'&#10003;':'&#9711;') + ' ' + f.l + '</span>';
+    });
+    h += '</div></div>';
+  });
+  document.getElementById('deals-list').innerHTML = h;
+}
+
+// ═══ INIT ═══
+renderSellerSteps();
+renderSellerForm();
+renderBuyerSteps();
+renderBuyerForm();
+renderDisclosure();
+renderDeals();
+</script>
+</body>
+</html>
