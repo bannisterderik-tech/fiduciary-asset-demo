@@ -164,10 +164,53 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
 /* SVG SHIELD INLINE */
 .shield-svg{display:inline-block;vertical-align:middle}
 
+/* ═══ SLIDE-OUT PANEL ═══ */
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:2000;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.panel-overlay.open{opacity:1;pointer-events:all}
+.side-panel{position:fixed;top:0;right:0;bottom:0;width:680px;max-width:100vw;background:#0D1321;z-index:2001;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);overflow-y:auto;border-left:1px solid #1E293B;box-shadow:-20px 0 60px rgba(0,0,0,0.5)}
+.side-panel.open{transform:translateX(0)}
+.sp-header{position:sticky;top:0;z-index:10;padding:20px 28px;background:rgba(13,19,33,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #1E293B;display:flex;align-items:center;justify-content:space-between}
+.sp-close{width:36px;height:36px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#EF4444;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .3s}
+.sp-close:hover{background:rgba(239,68,68,0.2)}
+.sp-body{padding:24px 28px}
+.sp-section{margin-bottom:24px}
+.sp-section-head{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:12px;cursor:pointer;transition:all .3s;user-select:none}
+.sp-section-head:hover{background:rgba(201,168,76,0.06)}
+.sp-section-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sp-section-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;flex:1}
+.sp-section-badge{font-size:11px;padding:3px 10px;border-radius:50px;font-weight:600}
+.sp-chevron{font-size:14px;color:#64748B;transition:transform .3s}
+.sp-section.expanded .sp-chevron{transform:rotate(180deg)}
+.sp-section-body{display:none;padding:0 20px 16px}
+.sp-section.expanded .sp-section-body{display:block}
+.sp-row{display:flex;padding:10px 0;border-bottom:1px solid rgba(30,41,59,0.4);font-size:13px}
+.sp-row:last-child{border-bottom:none}
+.sp-label{width:160px;flex-shrink:0;color:#64748B;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;padding-top:2px}
+.sp-value{color:#F1F5F9;flex:1;line-height:1.5}
+.sp-divider{font-size:10px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:2px;padding:12px 0 6px;margin-top:4px}
+.sp-status-bar{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:10px;margin-bottom:20px;font-size:13px;font-weight:500}
+.sp-download{text-align:center;padding:32px 20px;background:rgba(16,185,129,0.04);border:2px dashed rgba(16,185,129,0.3);border-radius:16px;margin-top:8px;transition:all .3s}
+.sp-download:hover{background:rgba(16,185,129,0.08);border-color:#10B981}
+.sp-tabs{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.sp-tab{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .3s;white-space:nowrap;background:transparent;border:1px solid transparent;color:#64748B;font-family:'DM Sans',sans-serif}
+.sp-tab:hover{color:#C9A84C}
+.sp-tab.active{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.3);color:#C9A84C;font-weight:600}
+.sp-tab-content{display:none}
+.sp-tab-content.active{display:block}
+
 @media(max-width:768px){
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .nav-links{display:none}
   .section,.section-wide{padding:100px 20px 60px}
+  .side-panel{width:100vw}
+  .sp-header{padding:16px 20px}
+  .sp-body{padding:16px 20px}
+  .sp-label{width:120px;font-size:10px}
+  .sp-section-head{padding:12px 14px}
+  .sp-row{flex-direction:column;gap:4px}
+  .sp-label{width:auto}
+  .sp-tabs{gap:2px}
+  .sp-tab{padding:6px 12px;font-size:11px}
 }
 </style>
 </head>
@@ -432,6 +475,30 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
   <div style="font-size:12px;color:#64748B;margin-top:24px">&copy; 2026 Fiduciary Asset Protection Group, LLC. All rights reserved. &bull; Document Assistance Only — Not Legal Advice</div>
 </footer>
 
+<!-- SLIDE-OUT PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="sp-header">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600" id="sp-title">Transaction Details</div>
+      <div style="font-size:12px;color:#64748B;margin-top:2px" id="sp-subtitle"></div>
+    </div>
+    <button class="sp-close" onclick="closePanel()">&times;</button>
+  </div>
+  <div class="sp-body">
+    <div class="sp-status-bar" id="sp-status"></div>
+    <div class="sp-tabs" id="sp-tabs"></div>
+    <div id="sp-tab-contents"></div>
+    <div class="sp-download" id="sp-download">
+      <div style="font-size:40px;margin-bottom:12px">&#128451;</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:6px">Combined Document Package</h3>
+      <p style="color:#94A3B8;font-size:13px;margin-bottom:20px">All transaction data compiled into one PDF</p>
+      <button class="btn btn-gold" onclick="generatePDF()" style="font-size:15px;padding:14px 36px">&#11015; Download Combined PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ═══ VIEW MANAGEMENT ═══
 function showView(id) {
@@ -683,7 +750,7 @@ function renderDeals() {
   let h = '';
   deals.forEach(d => {
     const pColor = d.progress === 100 ? '#10B981' : '#C9A84C';
-    h += '<div class="deal-row">';
+    h += '<div class="deal-row" onclick="openPanel(\''+d.id+'\')">';
     h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">';
     h += '<div style="display:flex;align-items:center;gap:16px"><span class="deal-id">' + d.id + '</span><div><div style="font-weight:600;font-size:15px;margin-bottom:2px">' + d.prop + '</div><div style="font-size:13px;color:#94A3B8">Seller: ' + d.seller + ' &rarr; Buyer: ' + d.buyer + '</div></div></div>';
     h += '<span class="deal-status" style="background:' + d.statusColor + '15;color:' + d.statusColor + ';border:1px solid ' + d.statusColor + '33">' + d.status + '</span>';
@@ -697,6 +764,295 @@ function renderDeals() {
     h += '</div></div>';
   });
   document.getElementById('deals-list').innerHTML = h;
+}
+
+// ═══ TRANSACTION DATA FOR PANEL ═══
+const txData = {
+  'FT-2026-001': {
+    id:'FT-2026-001', trustName:'The 1423 Sunset Blvd Land Trust', trustDate:'March 15, 2026',
+    trustee:'Fiduciary Asset Protection Group, LLC', successorTrustee:'Attorney Robert Maxwell, Esq.',
+    status:'In Progress', statusColor:'#C9A84C', progress:75,
+    seller:{name:'James & Mary Wilson',address:'1423 Sunset Blvd, Orlando, FL 32801',city:'Orlando',county:'Orange',state:'FL',zip:'32801',
+      taxId:'25-2241-8903',deedNames:'James Robert Wilson & Mary Ann Wilson',forwardingAddr:'890 Willowbrook Ln, Kissimmee, FL 34741',
+      email:'jwilson@email.com',phone:'(407) 555-3821',mortgageNames:'James R. Wilson & Mary A. Wilson',bank:'Wells Fargo Home Mortgage',
+      payment:'$1,842.00/mo (PiTi)',loanNumber:'WF-****-7823',payByMail:'P.O. Box 10335, Des Moines, IA 50306',
+      payByPhone:'1-800-357-6153',payOnline:'www.wellsfargo.com/mortgage',
+      legalDesc:'LOT 15, BLOCK 3, OF SUNRISE ESTATES PHASE II, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 42, PAGES 88-92, OF THE PUBLIC RECORDS OF ORANGE COUNTY, FLORIDA.'},
+    buyer:{company:'Sunrise Holdings LLC',memberName:'Marcus & Tanya Rivera',email:'marcus@sunriseholdings.com',phone:'(407) 555-9102',
+      closingDate:'April 2, 2026',primaryRes:'No',rentalType:'Long-term Rental',beneficiaries:'Sunrise Holdings LLC',
+      llcBenef:'Sunrise Holdings LLC (FL LLC, filed 2024)',benefAddr:'2200 International Dr, Suite 400, Orlando, FL 32819',
+      llcEmail:'admin@sunriseholdings.com',successorBenef:'Tanya Rivera',tcPhone:'(407) 555-6600',tcEmail:'tc@sunriseholdings.com',
+      titlePhone:'(407) 555-4400',titleEmail:'closing@titleflorida.com',titleAgent:'Sarah Johnson',agentPhone:'(407) 555-4401',agentEmail:'sarah@titleflorida.com'},
+    insurance:{policyType:'Landlord Policy',insured:'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee:'Wells Fargo Home Mortgage (1st Mortgagee)',additionalInterest:'James & Mary Wilson (Additional Interest)',
+      glBeneficiary:'Sunrise Holdings LLC',glSeller:'James & Mary Wilson (sent to bank)',escrow:'Yes - Invoice to Wells Fargo',poaStatus:'Durable POA executed'},
+    disclosure:{signer1:'Marcus Rivera',signer2:'Tanya Rivera',signDate:'March 14, 2026',sections:'All 5 acknowledged',confirmId:'DISC-2026-001-MR'}
+  },
+  'FT-2026-002': {
+    id:'FT-2026-002', trustName:'The 890 Palm Ave Land Trust', trustDate:'March 1, 2026',
+    trustee:'Fiduciary Asset Protection Group, LLC', successorTrustee:'TBD',
+    status:'Pending Insurance', statusColor:'#F59E0B', progress:50,
+    seller:{name:'Robert Chen',address:'890 Palm Ave, Tampa, FL 33601',city:'Tampa',county:'Hillsborough',state:'FL',zip:'33601',
+      taxId:'18-3302-4456',deedNames:'Robert Li Chen',forwardingAddr:'220 Bay St, Apt 8, Tampa, FL 33602',
+      email:'rchen@email.com',phone:'(813) 555-4420',mortgageNames:'Robert L. Chen',bank:'Chase Home Lending',
+      payment:'$1,580.00/mo',loanNumber:'CH-****-9012',payByMail:'P.O. Box 6074, Carol Stream, IL 60197',
+      payByPhone:'1-800-848-9136',payOnline:'www.chase.com/mortgage',
+      legalDesc:'LOT 4, BLOCK 12, OF PALM GARDENS UNIT 3, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 55, PAGE 31, OF THE PUBLIC RECORDS OF HILLSBOROUGH COUNTY, FLORIDA.'},
+    buyer:{company:'Coastal Investments LLC',memberName:'Derek & Anna Mosley',email:'derek@coastalinv.com',phone:'(813) 555-7788',
+      closingDate:'March 28, 2026',primaryRes:'No',rentalType:'Short-term Rental',beneficiaries:'Coastal Investments LLC',
+      llcBenef:'Coastal Investments LLC (FL LLC, filed 2025)',benefAddr:'1400 N Dale Mabry Hwy, Tampa, FL 33607',
+      llcEmail:'admin@coastalinv.com',successorBenef:'Anna Mosley',tcPhone:'(813) 555-2000',tcEmail:'tc@coastalinv.com',
+      titlePhone:'(813) 555-3300',titleEmail:'closing@tampatitle.com',titleAgent:'Mike Reynolds',agentPhone:'(813) 555-3301',agentEmail:'mreynolds@tampatitle.com'},
+    insurance:{policyType:'Pending - Landlord Policy Required',insured:'TBD',mortgagee:'TBD',additionalInterest:'TBD',
+      glBeneficiary:'TBD',glSeller:'TBD',escrow:'TBD',poaStatus:'Pending'},
+    disclosure:{signer1:'Derek Mosley',signer2:'Anna Mosley',signDate:'February 28, 2026',sections:'All 5 acknowledged',confirmId:'DISC-2026-002-DM'}
+  },
+  'FT-2026-003': {
+    id:'FT-2026-003', trustName:'The 2100 Lake Dr Land Trust', trustDate:'February 28, 2026',
+    trustee:'Fiduciary Asset Protection Group, LLC', successorTrustee:'David Kim (self)',
+    status:'Ready to Close', statusColor:'#10B981', progress:100,
+    seller:{name:'Patricia Gomez',address:'2100 Lake Dr, Jacksonville, FL 32210',city:'Jacksonville',county:'Duval',state:'FL',zip:'32210',
+      taxId:'12-4489-2201',deedNames:'Patricia Maria Gomez',forwardingAddr:'450 Beach Blvd, Apt 12B, Jacksonville, FL 32246',
+      email:'pgomez@email.com',phone:'(904) 555-2190',mortgageNames:'Patricia M. Gomez',bank:'Bank of America',
+      payment:'$1,295.00/mo (PiTi)',loanNumber:'BOA-****-3391',payByMail:'P.O. Box 15313, Wilmington, DE 19886',
+      payByPhone:'1-800-669-6607',payOnline:'www.bankofamerica.com/mortgage',
+      legalDesc:'LOT 8, BLOCK 7, OF LAKEWOOD TERRACE, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 18, PAGES 44-45, OF THE PUBLIC RECORDS OF DUVAL COUNTY, FLORIDA.'},
+    buyer:{company:'',memberName:'David Kim',email:'dkim@email.com',phone:'(904) 555-8734',
+      closingDate:'March 20, 2026',primaryRes:'Yes',rentalType:'Not a Rental',beneficiaries:'David Kim & Susan Kim',
+      llcBenef:'N/A (Primary Residence - Beneficiary Domiciles)',benefAddr:'2100 Lake Dr, Jacksonville, FL 32210',
+      llcEmail:'',successorBenef:'Susan Kim',tcPhone:'(904) 555-1100',tcEmail:'tc@homesolutionsjax.com',
+      titlePhone:'(904) 555-7700',titleEmail:'closing@firstcoasttitle.com',titleAgent:'Michael Torres',agentPhone:'(904) 555-7701',agentEmail:'mtorres@firstcoasttitle.com'},
+    insurance:{policyType:"Homeowner's Policy (Beneficiary Domiciles)",insured:'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee:'Bank of America (1st Mortgagee)',additionalInterest:'Patricia Gomez (Additional Interest)',
+      glBeneficiary:'David Kim & Susan Kim',glSeller:'Patricia Gomez (sent to bank)',escrow:'Yes - Invoice to Bank of America',poaStatus:'Durable POA executed'},
+    disclosure:{signer1:'David Kim',signer2:'Susan Kim',signDate:'February 27, 2026',sections:'All 5 acknowledged',confirmId:'DISC-2026-003-DK'}
+  },
+  'FT-2026-004': {
+    id:'FT-2026-004', trustName:'The 567 Magnolia St Land Trust', trustDate:'March 25, 2026',
+    trustee:'Fiduciary Asset Protection Group, LLC', successorTrustee:'TBD',
+    status:'New', statusColor:'#60A5FA', progress:25,
+    seller:{name:'Thomas & Linda Park',address:'567 Magnolia St, Miami, FL 33130',city:'Miami',county:'Miami-Dade',state:'FL',zip:'33130',
+      taxId:'30-1155-7789',deedNames:'Thomas J. Park & Linda S. Park',forwardingAddr:'1200 Brickell Ave, Miami, FL 33131',
+      email:'tpark@email.com',phone:'(305) 555-6612',mortgageNames:'Thomas J. Park & Linda S. Park',bank:'US Bank',
+      payment:'$2,100.00/mo (PiTi)',loanNumber:'USB-****-4456',payByMail:'P.O. Box 790408, St. Louis, MO 63179',
+      payByPhone:'1-800-365-7772',payOnline:'www.usbank.com/mortgage',
+      legalDesc:'LOT 3, BLOCK 1, OF MAGNOLIA HEIGHTS, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 78, PAGES 12-13, OF THE PUBLIC RECORDS OF MIAMI-DADE COUNTY, FLORIDA.'},
+    buyer:{company:'Palmetto Capital LLC',memberName:'Jorge & Maria Santos',email:'jorge@palmettocap.com',phone:'(305) 555-9933',
+      closingDate:'April 15, 2026',primaryRes:'No',rentalType:'Long-term Rental',beneficiaries:'Palmetto Capital LLC',
+      llcBenef:'Palmetto Capital LLC (FL LLC, filed 2024)',benefAddr:'800 S. Dixie Hwy, Suite 110, Miami, FL 33133',
+      llcEmail:'admin@palmettocap.com',successorBenef:'Maria Santos',tcPhone:'',tcEmail:'',
+      titlePhone:'(305) 555-8800',titleEmail:'closing@miamititle.com',titleAgent:'Carlos Vega',agentPhone:'(305) 555-8801',agentEmail:'cvega@miamititle.com'},
+    insurance:{policyType:'Pending',insured:'TBD',mortgagee:'TBD',additionalInterest:'TBD',glBeneficiary:'TBD',glSeller:'TBD',escrow:'TBD',poaStatus:'Pending'},
+    disclosure:{signer1:'Pending',signer2:'',signDate:'Pending',sections:'Pending',confirmId:'Pending'}
+  },
+  'FT-2026-005': {
+    id:'FT-2026-005', trustName:'The 3344 Cypress Ln Land Trust', trustDate:'March 22, 2026',
+    trustee:'Fiduciary Asset Protection Group, LLC', successorTrustee:'Attorney Linda Chen, Esq.',
+    status:'Under Review', statusColor:'#A78BFA', progress:60,
+    seller:{name:'Angela Foster',address:'3344 Cypress Ln, Sarasota, FL 34231',city:'Sarasota',county:'Sarasota',state:'FL',zip:'34231',
+      taxId:'08-1192-5567',deedNames:'Angela Marie Foster',forwardingAddr:'1100 Main St, Unit 305, Sarasota, FL 34236',
+      email:'afoster@email.com',phone:'(941) 555-3344',mortgageNames:'Angela M. Foster',bank:'Truist Bank',
+      payment:'$1,650.00/mo (PiTi)',loanNumber:'TR-****-8812',payByMail:'P.O. Box 27850, Richmond, VA 23261',
+      payByPhone:'1-800-226-5228',payOnline:'www.truist.com/mortgage',
+      legalDesc:'LOT 22, OF CYPRESS GARDENS SUBDIVISION, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 31, PAGE 15, OF THE PUBLIC RECORDS OF SARASOTA COUNTY, FLORIDA.'},
+    buyer:{company:'Bayshore Properties LLC',memberName:'Nathan & Lisa Patel',email:'nathan@bayshoreprops.com',phone:'(941) 555-7890',
+      closingDate:'April 10, 2026',primaryRes:'No',rentalType:'Short-term Rental',beneficiaries:'Bayshore Properties LLC',
+      llcBenef:'Bayshore Properties LLC (FL LLC, filed 2025)',benefAddr:'500 S. Tamiami Trail, Suite 200, Sarasota, FL 34236',
+      llcEmail:'admin@bayshoreprops.com',successorBenef:'Lisa Patel',tcPhone:'(941) 555-2200',tcEmail:'tc@bayshoreprops.com',
+      titlePhone:'(941) 555-5500',titleEmail:'closing@gulfcoasttitle.com',titleAgent:'Jennifer Adams',agentPhone:'(941) 555-5501',agentEmail:'jadams@gulfcoasttitle.com'},
+    insurance:{policyType:'Landlord Policy (Short-term Rental)',insured:'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee:'Truist Bank (1st Mortgagee)',additionalInterest:'Angela Foster (Additional Interest)',
+      glBeneficiary:'Bayshore Properties LLC',glSeller:'Angela Foster (sent to bank)',escrow:'Yes - Invoice to Truist Bank',poaStatus:'Durable POA executed'},
+    disclosure:{signer1:'Nathan Patel',signer2:'Lisa Patel',signDate:'March 21, 2026',sections:'All 5 acknowledged',confirmId:'DISC-2026-005-NP'}
+  }
+};
+
+// ═══ PANEL MANAGEMENT ═══
+let currentTx = null;
+
+function openPanel(dealId) {
+  currentTx = txData[dealId];
+  if (!currentTx) return;
+  const d = currentTx;
+  document.getElementById('sp-title').textContent = d.seller.address.split(',')[0];
+  document.getElementById('sp-subtitle').textContent = d.id + ' \u2022 ' + d.trustName;
+
+  // Status bar
+  const sColors = {'Ready to Close':'#10B981','In Progress':'#C9A84C','Pending Insurance':'#F59E0B','New':'#60A5FA','Under Review':'#A78BFA'};
+  const sc = sColors[d.status] || '#C9A84C';
+  document.getElementById('sp-status').innerHTML = '<div style="width:10px;height:10px;border-radius:50%;background:'+sc+';flex-shrink:0"></div><span style="color:'+sc+';flex:1">'+d.status+' \u2014 '+d.progress+'% Complete</span><span style="font-size:11px;color:#64748B">'+d.trustDate+'</span>';
+  document.getElementById('sp-status').style.cssText = 'display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:10px;margin-bottom:20px;font-size:13px;font-weight:500;background:'+sc+'12;border:1px solid '+sc+'33';
+
+  // Tabs
+  const tabs = ['Overview','Seller','Buyer','Insurance','Disclosure'];
+  document.getElementById('sp-tabs').innerHTML = tabs.map((t,i) => '<div class="sp-tab'+(i===0?' active':'')+'" onclick="switchTab('+i+',this)">'+t+'</div>').join('');
+
+  // Tab contents
+  let html = '';
+
+  // TAB 0 - Overview
+  html += '<div class="sp-tab-content active">';
+  html += spRow('Trust Name', d.trustName) + spRow('Transaction ID', d.id) + spRow('Date Established', d.trustDate);
+  html += spRow('Trustee', d.trustee) + spRow('Successor Trustee', d.successorTrustee);
+  html += spRow('Beneficiary', d.buyer.beneficiaries) + spRow('Property', d.seller.address);
+  html += spRow('Seller', d.seller.name) + spRow('Buyer', d.buyer.memberName + (d.buyer.company ? ' ('+d.buyer.company+')':''));
+  html += spRow('Closing Date', d.buyer.closingDate) + spRow('Status', '<span style="color:'+sc+';font-weight:600">'+d.status+'</span>');
+  html += '</div>';
+
+  // TAB 1 - Seller
+  html += '<div class="sp-tab-content">';
+  html += spDiv('Property Details');
+  html += spRow('Address', d.seller.address) + spRow('City / County', d.seller.city+', '+d.seller.county+' County, '+d.seller.state+' '+d.seller.zip);
+  html += spRow('Tax ID / APA #', d.seller.taxId) + spRow('Names on Deed', d.seller.deedNames);
+  html += spDiv('Seller Contact');
+  html += spRow('Name(s)', d.seller.name) + spRow('Forwarding Addr', d.seller.forwardingAddr);
+  html += spRow('Email', d.seller.email) + spRow('Phone', d.seller.phone);
+  html += spDiv('Mortgage & Lender');
+  html += spRow('Names on Mortgage', d.seller.mortgageNames) + spRow('Bank', d.seller.bank);
+  html += spRow('Monthly Payment', d.seller.payment) + spRow('Loan #', d.seller.loanNumber);
+  html += spRow('Pay by Mail', d.seller.payByMail) + spRow('Pay by Phone', d.seller.payByPhone) + spRow('Pay Online', d.seller.payOnline);
+  html += spDiv('Legal Description');
+  html += spRow('Legal Desc.', d.seller.legalDesc);
+  html += '</div>';
+
+  // TAB 2 - Buyer
+  html += '<div class="sp-tab-content">';
+  html += spDiv('Buyer Info');
+  html += spRow('Company', d.buyer.company || 'N/A (Individual)') + spRow("Member's Name", d.buyer.memberName);
+  html += spRow('Email', d.buyer.email) + spRow('Phone', d.buyer.phone);
+  html += spRow('Closing Date', d.buyer.closingDate) + spRow('Primary Residence?', d.buyer.primaryRes) + spRow('Rental Type', d.buyer.rentalType);
+  html += spDiv('Beneficiary');
+  html += spRow('Beneficiaries', d.buyer.beneficiaries) + spRow('LLC Beneficiary', d.buyer.llcBenef);
+  html += spRow('Mailing Addr', d.buyer.benefAddr) + spRow('LLC Email', d.buyer.llcEmail || 'N/A');
+  html += spRow('Successor Benef.', d.buyer.successorBenef);
+  html += spDiv('Title Company');
+  html += spRow('Title Co. Phone', d.buyer.titlePhone) + spRow('Title Co. Email', d.buyer.titleEmail);
+  html += spRow('Title Agent', d.buyer.titleAgent) + spRow('Agent Phone', d.buyer.agentPhone) + spRow('Agent Email', d.buyer.agentEmail);
+  html += '</div>';
+
+  // TAB 3 - Insurance
+  html += '<div class="sp-tab-content">';
+  html += spRow('Policy Type', d.insurance.policyType) + spRow('Named Insured', d.insurance.insured);
+  html += spRow('1st Mortgagee', d.insurance.mortgagee) + spRow('Additional Interest', d.insurance.additionalInterest);
+  html += spRow('GL - Beneficiary', d.insurance.glBeneficiary) + spRow('GL - Seller', d.insurance.glSeller);
+  html += spRow('Escrow', d.insurance.escrow) + spRow('POA Status', d.insurance.poaStatus);
+  html += '</div>';
+
+  // TAB 4 - Disclosure
+  html += '<div class="sp-tab-content">';
+  html += spRow('Signer 1', d.disclosure.signer1) + spRow('Signer 2', d.disclosure.signer2 || 'N/A');
+  html += spRow('Date Signed', d.disclosure.signDate) + spRow('Sections', d.disclosure.sections);
+  html += spRow('Confirmation ID', d.disclosure.confirmId);
+  html += '</div>';
+
+  document.getElementById('sp-tab-contents').innerHTML = html;
+
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('sidePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('sidePanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchTab(idx, el) {
+  document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const contents = document.querySelectorAll('.sp-tab-content');
+  contents.forEach((c,i) => c.classList.toggle('active', i === idx));
+}
+
+function spRow(label, value) {
+  return '<div class="sp-row"><div class="sp-label">'+label+'</div><div class="sp-value">'+(value||'\u2014')+'</div></div>';
+}
+function spDiv(text) {
+  return '<div class="sp-divider">'+text+'</div>';
+}
+
+// ═══ PDF GENERATION ═══
+function generatePDF() {
+  if (!currentTx) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('portrait','mm','letter');
+  const d = currentTx;
+  const W=215.9, H=279.4, margin=20, cW=W-margin*2;
+  let y=0;
+  const gold=[201,168,76], darkBg=[10,14,26], navy=[17,24,39], light=[241,245,249], muted=[148,163,184], dark=[30,41,59];
+
+  function np(){doc.addPage();y=margin;doc.setFillColor(255,255,255);doc.rect(0,0,W,H,'F');}
+  function cs(n){if(y+n>H-25)np();}
+
+  // COVER PAGE
+  doc.setFillColor(...darkBg);doc.rect(0,0,W,H,'F');
+  doc.setFillColor(...gold);doc.rect(0,0,W,4,'F');
+  doc.setFillColor(...gold);doc.roundedRect(W/2-20,50,40,40,6,6,'F');
+  doc.setFillColor(37,99,235);doc.roundedRect(W/2-16,54,32,32,4,4,'F');
+  doc.setTextColor(232,212,139);doc.setFontSize(28);doc.setFont('helvetica','bold');doc.text('F',W/2,76,{align:'center'});
+  doc.setTextColor(...gold);doc.setFontSize(22);doc.text('FIDUCIARY ASSET',W/2,108,{align:'center'});
+  doc.setFontSize(11);doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.text('PROTECTION GROUP LLC',W/2,116,{align:'center'});
+  doc.setDrawColor(...gold);doc.setLineWidth(0.5);doc.line(W/2-40,126,W/2+40,126);
+  doc.setTextColor(...light);doc.setFontSize(18);doc.setFont('helvetica','bold');
+  doc.text('COMBINED TRANSACTION',W/2,142,{align:'center'});doc.text('DOCUMENT PACKAGE',W/2,150,{align:'center'});
+  doc.setTextColor(...gold);doc.setFontSize(13);doc.setFont('helvetica','normal');doc.text(d.trustName,W/2,166,{align:'center'});
+  doc.setFillColor(...navy);doc.roundedRect(margin+20,180,cW-40,52,4,4,'F');
+  doc.setFontSize(10);doc.setTextColor(...muted);
+  doc.text('TRANSACTION ID',margin+30,192);doc.text('PROPERTY',margin+30,204);doc.text('DATE COMPILED',margin+30,216);doc.text('STATUS',margin+30,228);
+  doc.setTextColor(...light);doc.setFont('helvetica','bold');
+  doc.text(d.id,margin+75,192);doc.text(d.seller.address,margin+75,204);
+  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),margin+75,216);
+  doc.setTextColor(16,185,129);doc.text(d.status.toUpperCase(),margin+75,228);
+  doc.setTextColor(...muted);doc.setFont('helvetica','normal');doc.setFontSize(8);
+  doc.text('CONFIDENTIAL - FOR AUTHORIZED USE ONLY',W/2,H-30,{align:'center'});
+  doc.text('Document Assistance Only - Not Legal Advice',W/2,H-24,{align:'center'});
+  doc.text('Eric Sandhaus (407) 335-6591  |  Barry Sandhaus (407) 592-4166',W/2,H-18,{align:'center'});
+
+  function secH(t){cs(20);doc.setFillColor(...gold);doc.rect(margin,y,cW,12,'F');doc.setTextColor(...darkBg);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text(t.toUpperCase(),margin+6,y+8.5);y+=18;}
+  function subH(t){cs(12);doc.setFillColor(245,245,245);doc.rect(margin,y,cW,8,'F');doc.setTextColor(100,116,139);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text(t.toUpperCase(),margin+4,y+5.5);y+=10;}
+  function dRow(l,v){cs(9);doc.setTextColor(100,116,139);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text(l,margin+4,y+5);doc.setTextColor(...dark);doc.setFontSize(9);var lines=doc.splitTextToSize(v||'\u2014',cW-60);doc.text(lines,margin+56,y+5);y+=8+(lines.length-1)*4;}
+  function pgF(n){doc.setDrawColor(200,200,200);doc.setLineWidth(0.2);doc.line(margin,H-18,W-margin,H-18);doc.setTextColor(150,150,150);doc.setFontSize(7);doc.text('Fiduciary Asset Protection Group, LLC  |  '+d.id,margin,H-13);doc.text('Page '+n,W-margin,H-13,{align:'right'});}
+
+  np();y=margin;
+  secH('Land Trust Overview');
+  dRow('Trust Name',d.trustName);dRow('Transaction ID',d.id);dRow('Date Established',d.trustDate);
+  dRow('Trustee',d.trustee);dRow('Successor Trustee',d.successorTrustee);dRow('Beneficiary',d.buyer.beneficiaries);dRow('Property',d.seller.address);
+  y+=6;
+  secH('Seller Information');subH('Property Details');
+  dRow('Address',d.seller.address);dRow('City/County/State',d.seller.city+', '+d.seller.county+' County, '+d.seller.state+' '+d.seller.zip);
+  dRow('Tax ID',d.seller.taxId);dRow('Names on Deed',d.seller.deedNames);
+  subH('Seller Contact');dRow('Name(s)',d.seller.name);dRow('Forwarding Addr',d.seller.forwardingAddr);dRow('Email',d.seller.email);dRow('Phone',d.seller.phone);
+  subH('Mortgage & Lender');dRow('Names on Mortgage',d.seller.mortgageNames);dRow('Bank',d.seller.bank);dRow('Monthly Payment',d.seller.payment);
+  dRow('Loan #',d.seller.loanNumber);dRow('Pay by Mail',d.seller.payByMail);dRow('Pay by Phone',d.seller.payByPhone);dRow('Pay Online',d.seller.payOnline);
+  subH('Legal Description');dRow('Legal Desc.',d.seller.legalDesc);
+  pgF(2);
+
+  np();y=margin;
+  secH('Buyer Information');subH('Buyer Details');
+  dRow('Company',d.buyer.company||'N/A');dRow("Member's Name",d.buyer.memberName);dRow('Email',d.buyer.email);dRow('Phone',d.buyer.phone);
+  dRow('Closing Date',d.buyer.closingDate);dRow('Primary Res?',d.buyer.primaryRes);dRow('Rental Type',d.buyer.rentalType);
+  subH('Beneficiary');dRow('Beneficiaries',d.buyer.beneficiaries);dRow('LLC Benef.',d.buyer.llcBenef);dRow('Mailing Addr',d.buyer.benefAddr);
+  dRow('LLC Email',d.buyer.llcEmail||'N/A');dRow('Successor Benef.',d.buyer.successorBenef);
+  subH('Title Company');dRow('Title Phone',d.buyer.titlePhone);dRow('Title Email',d.buyer.titleEmail);dRow('Title Agent',d.buyer.titleAgent);
+  dRow('Agent Phone',d.buyer.agentPhone);dRow('Agent Email',d.buyer.agentEmail);
+  y+=6;
+  secH('Insurance Configuration');
+  dRow('Policy Type',d.insurance.policyType);dRow('Named Insured',d.insurance.insured);dRow('1st Mortgagee',d.insurance.mortgagee);
+  dRow('Additional Interest',d.insurance.additionalInterest);dRow('GL - Beneficiary',d.insurance.glBeneficiary);
+  dRow('GL - Seller',d.insurance.glSeller);dRow('Escrow',d.insurance.escrow);dRow('POA Status',d.insurance.poaStatus);
+  y+=6;
+  secH('Disclosure & E-Signature');
+  dRow('Signer 1',d.disclosure.signer1);dRow('Signer 2',d.disclosure.signer2||'N/A');dRow('Date Signed',d.disclosure.signDate);
+  dRow('Sections',d.disclosure.sections);dRow('Confirmation ID',d.disclosure.confirmId);
+  y+=16;cs(40);
+  doc.setDrawColor(...dark);doc.setLineWidth(0.3);
+  doc.line(margin,y,margin+70,y);doc.line(W/2+5,y,W-margin,y);
+  doc.setTextColor(...muted);doc.setFontSize(8);doc.text('Authorized Signature',margin,y+5);doc.text('Date',W/2+5,y+5);
+  y+=16;doc.line(margin,y,margin+70,y);doc.line(W/2+5,y,W-margin,y);doc.text('Trustee Signature',margin,y+5);doc.text('Date',W/2+5,y+5);
+  pgF(3);
+
+  doc.save(d.id+'_Combined_Package.pdf');
 }
 
 // ═══ INIT ═══

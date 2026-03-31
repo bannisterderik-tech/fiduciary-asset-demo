@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Compiler — Fiduciary Asset Protection Group</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0A0E1A;color:#F1F5F9;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::selection{background:#C9A84C;color:#0A0E1A}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0A0E1A}
+::-webkit-scrollbar-thumb{background:#9A7B2E;border-radius:3px}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+a{text-decoration:none;color:inherit}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulseGreen{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)}50%{box-shadow:0 0 40px rgba(16,185,129,0.4)}}
+
+.fade-up{animation:fadeUp .8s ease-out forwards}
+.fd1{animation:fadeUp .8s ease-out .1s forwards;opacity:0}
+.fd2{animation:fadeUp .8s ease-out .2s forwards;opacity:0}
+.fd3{animation:fadeUp .8s ease-out .3s forwards;opacity:0}
+
+.shimmer-text{
+  background:linear-gradient(135deg,#C9A84C 0%,#E8D48B 50%,#C9A84C 100%);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 40px;background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #1E293B}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:14px;cursor:pointer;text-decoration:none}
+.nav-logo h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#C9A84C;line-height:1.1}
+.nav-logo span{font-size:10px;letter-spacing:3px;color:#94A3B8;text-transform:uppercase}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-link{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;background:transparent;border:1px solid transparent;color:#94A3B8;font-size:13px;font-weight:400;cursor:pointer;transition:all .3s ease;font-family:'DM Sans',sans-serif;text-decoration:none}
+.nav-link:hover{color:#C9A84C}
+.nav-link.active{background:rgba(201,168,76,0.12);border-color:rgba(201,168,76,0.3);color:#C9A84C;font-weight:600}
+
+/* BUTTONS */
+.btn{padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:10px;border:none}
+.btn-gold{background:#C9A84C;color:#0A0E1A}
+.btn-gold:hover{background:#E8D48B;box-shadow:0 0 30px rgba(201,168,76,0.4)}
+.btn-outline{background:transparent;color:#C9A84C;border:1px solid rgba(201,168,76,0.3)}
+.btn-outline:hover{box-shadow:0 0 20px rgba(201,168,76,0.15)}
+.btn-green{background:#10B981;color:#fff}
+.btn-green:hover{background:#34D399;box-shadow:0 0 30px rgba(16,185,129,0.4)}
+
+/* FORM */
+.field{margin-bottom:20px}
+.field label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#94A3B8;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.field label .req{color:#C9A84C}
+.field input,.field select,.field textarea{width:100%;padding:14px 16px;background:#0D1321;border:1px solid #1E293B;border-radius:8px;color:#F1F5F9;font-size:15px;outline:none;transition:all .3s ease}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#C9A84C;box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+.field textarea{resize:vertical}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* SECTIONS */
+.section-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;font-size:12px;font-weight:500;margin-bottom:16px;text-transform:uppercase;letter-spacing:1.5px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600}
+.section-sub{color:#94A3B8;margin-top:8px}
+
+/* COMPILER LAYOUT */
+.compiler-wrap{max-width:1200px;margin:0 auto;padding:100px 40px 80px}
+.panel{background:#111827;border-radius:20px;padding:36px;border:1px solid #1E293B;margin-bottom:24px}
+.panel-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #1E293B}
+.panel-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600}
+.panel-desc{font-size:13px;color:#64748B}
+
+/* PREVIEW TABLE */
+.doc-preview{background:#0D1321;border-radius:16px;border:1px solid #1E293B;overflow:hidden;margin-top:24px}
+.doc-preview-header{padding:20px 28px;background:rgba(201,168,76,0.06);border-bottom:1px solid #1E293B;display:flex;align-items:center;justify-content:space-between}
+.doc-preview-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#C9A84C}
+.doc-row{display:flex;padding:14px 28px;border-bottom:1px solid rgba(30,41,59,0.5);font-size:14px}
+.doc-row:last-child{border-bottom:none}
+.doc-row:hover{background:rgba(201,168,76,0.03)}
+.doc-label{width:220px;flex-shrink:0;color:#64748B;font-weight:500;text-transform:uppercase;font-size:12px;letter-spacing:0.5px;padding-top:2px}
+.doc-value{color:#F1F5F9;flex:1}
+.doc-section-divider{padding:12px 28px;background:rgba(30,41,59,0.3);font-size:12px;font-weight:600;color:#C9A84C;text-transform:uppercase;letter-spacing:2px}
+
+/* STATUS BAR */
+.status-bar{display:flex;align-items:center;gap:12px;padding:16px 24px;border-radius:12px;margin-bottom:24px}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-text{font-size:14px;font-weight:500}
+
+/* DOWNLOAD AREA */
+.download-area{text-align:center;padding:48px 32px;background:rgba(16,185,129,0.04);border:2px dashed rgba(16,185,129,0.3);border-radius:20px;margin-top:32px;transition:all .4s ease}
+.download-area:hover{background:rgba(16,185,129,0.08);border-color:#10B981}
+.download-icon{font-size:48px;margin-bottom:16px}
+
+/* FOOTER */
+footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
+
+@media(max-width:768px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .compiler-wrap{padding:100px 20px 60px}
+  .doc-label{width:140px;font-size:11px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A84C"/><stop offset="50%" stop-color="#E8D48B"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient></defs>
+        <path d="M50 5 L90 25 L90 55 C90 75 70 92 50 98 C30 92 10 75 10 55 L10 25 Z" fill="url(#sg)"/>
+        <path d="M50 12 L83 29 L83 55 C83 72 66 86 50 91 C34 86 17 72 17 55 L17 29 Z" fill="url(#ig)"/>
+        <text x="50" y="62" text-anchor="middle" fill="#E8D48B" font-size="36" font-weight="700" font-family="Cormorant Garamond,serif">F</text>
+      </svg>
+      <div>
+        <h2>FIDUCIARY ASSET</h2>
+        <span>Protection Group LLC</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">&#127968; Home</a>
+      <a class="nav-link active" href="compiler.html">&#128451; Compile Docs</a>
+    </div>
+  </div>
+</nav>
+
+<div class="compiler-wrap">
+  <!-- HEADER -->
+  <div style="text-align:center;margin-bottom:48px" class="fade-up">
+    <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128451; Document Compiler</span>
+    <h2 class="section-title">Compile Transaction Package</h2>
+    <p class="section-sub" style="max-width:640px;margin:12px auto 0">Review and combine all seller and buyer information into a single, comprehensive Land Trust document package ready for download.</p>
+  </div>
+
+  <!-- SELECT DEAL -->
+  <div class="panel fd1">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(96,165,250,0.15);color:#60A5FA">&#128269;</div>
+      <div>
+        <div class="panel-title">Select Transaction</div>
+        <div class="panel-desc">Choose a completed deal to compile into a downloadable document package</div>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <select id="deal-select" onchange="loadDeal()">
+        <option value="">Select a transaction...</option>
+        <option value="1">FT-2026-001 — 1423 Sunset Blvd, Orlando, FL (Wilson &rarr; Sunrise Holdings)</option>
+        <option value="2">FT-2026-003 — 2100 Lake Dr, Jacksonville, FL (Gomez &rarr; David Kim)</option>
+        <option value="3">FT-2026-005 — 3344 Cypress Ln, Sarasota, FL (Foster &rarr; Bayshore Properties)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- COMPILED DOCUMENT PREVIEW -->
+  <div id="compiled-output" style="display:none">
+
+    <!-- STATUS -->
+    <div class="status-bar fd2" id="status-bar" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3)">
+      <div class="status-dot" style="background:#10B981"></div>
+      <span class="status-text" style="color:#10B981">All documents received &mdash; Ready to compile</span>
+      <span style="margin-left:auto;font-size:12px;color:#64748B" id="deal-id-display"></span>
+    </div>
+
+    <!-- TRUST INFO PANEL -->
+    <div class="panel fd2">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(201,168,76,0.15);color:#C9A84C">&#128737;</div>
+        <div>
+          <div class="panel-title">Land Trust Overview</div>
+          <div class="panel-desc">Trust formation details and parties involved</div>
+        </div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <span class="doc-preview-title">Trust Information</span>
+          <span style="font-size:12px;color:#64748B" id="trust-date"></span>
+        </div>
+        <div id="trust-rows"></div>
+      </div>
+    </div>
+
+    <!-- SELLER PANEL -->
+    <div class="panel fd2">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(239,68,68,0.12);color:#EF4444">&#128196;</div>
+        <div>
+          <div class="panel-title">Seller Information</div>
+          <div class="panel-desc">Property owner and mortgage details from the Seller Form</div>
+        </div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <span class="doc-preview-title">Seller Details</span>
+          <span style="font-size:12px;padding:4px 12px;border-radius:50px;background:rgba(16,185,129,0.1);color:#10B981">&#10003; Submitted</span>
+        </div>
+        <div id="seller-rows"></div>
+      </div>
+    </div>
+
+    <!-- BUYER PANEL -->
+    <div class="panel fd2">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(37,99,235,0.12);color:#2563EB">&#128101;</div>
+        <div>
+          <div class="panel-title">Buyer Information</div>
+          <div class="panel-desc">Buyer, beneficiary, and title company details from the Buyer Form</div>
+        </div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <span class="doc-preview-title">Buyer Details</span>
+          <span style="font-size:12px;padding:4px 12px;border-radius:50px;background:rgba(16,185,129,0.1);color:#10B981">&#10003; Submitted</span>
+        </div>
+        <div id="buyer-rows"></div>
+      </div>
+    </div>
+
+    <!-- INSURANCE PANEL -->
+    <div class="panel fd3">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(16,185,129,0.12);color:#10B981">&#128737;</div>
+        <div>
+          <div class="panel-title">Insurance Configuration</div>
+          <div class="panel-desc">Policy type, insured parties, and coverage details</div>
+        </div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <span class="doc-preview-title">Insurance Details</span>
+          <span style="font-size:12px;padding:4px 12px;border-radius:50px;background:rgba(16,185,129,0.1);color:#10B981">&#10003; Verified</span>
+        </div>
+        <div id="insurance-rows"></div>
+      </div>
+    </div>
+
+    <!-- DISCLOSURE PANEL -->
+    <div class="panel fd3">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(139,92,246,0.12);color:#A78BFA">&#9989;</div>
+        <div>
+          <div class="panel-title">Disclosure & Acknowledgment</div>
+          <div class="panel-desc">E-signature status and agreement confirmation</div>
+        </div>
+      </div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <span class="doc-preview-title">Signature Record</span>
+          <span style="font-size:12px;padding:4px 12px;border-radius:50px;background:rgba(16,185,129,0.1);color:#10B981">&#10003; Signed</span>
+        </div>
+        <div id="disclosure-rows"></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="download-area fd3">
+      <div class="download-icon">&#128451;</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;margin-bottom:8px">Combined Document Package</h3>
+      <p style="color:#94A3B8;font-size:15px;margin-bottom:28px">All seller, buyer, insurance, and disclosure data compiled into one comprehensive PDF</p>
+      <button class="btn btn-green" onclick="generatePDF()" style="font-size:17px;padding:18px 48px">
+        &#11015; Download Combined PDF
+      </button>
+      <p style="color:#64748B;font-size:12px;margin-top:16px">PDF includes: Trust Overview &bull; Seller Details &bull; Buyer & Beneficiary &bull; Insurance &bull; E-Signature Record</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px">
+    <svg width="36" height="36" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A84C"/><stop offset="50%" stop-color="#E8D48B"/><stop offset="100%" stop-color="#C9A84C"/></linearGradient><linearGradient id="ig2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient></defs><path d="M50 5 L90 25 L90 55 C90 75 70 92 50 98 C30 92 10 75 10 55 L10 25 Z" fill="url(#sg2)"/><path d="M50 12 L83 29 L83 55 C83 72 66 86 50 91 C34 86 17 72 17 55 L17 29 Z" fill="url(#ig2)"/><text x="50" y="62" text-anchor="middle" fill="#E8D48B" font-size="36" font-weight="700" font-family="Cormorant Garamond,serif">F</text></svg>
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#C9A84C">FIDUCIARY ASSET</div>
+      <div style="font-size:9px;letter-spacing:2.5px;color:#64748B;text-transform:uppercase">Protection Group LLC</div>
+    </div>
+  </div>
+  <div style="font-size:14px;color:#94A3B8;margin-bottom:8px">Eric Sandhaus (407) 335-6591 &bull; Barry Sandhaus (407) 592-4166</div>
+  <div style="font-size:13px;color:#64748B">Eric@FiduciaryAssetProtectionGroupLLC.com &bull; Barry@FiduciaryAssetProtectionGroupLLC.com</div>
+  <div style="font-size:12px;color:#64748B;margin-top:24px">&copy; 2026 Fiduciary Asset Protection Group, LLC. All rights reserved. &bull; Document Assistance Only &mdash; Not Legal Advice</div>
+</footer>
+
+<script>
+// ═══ DEMO TRANSACTION DATA ═══
+const deals = {
+  '1': {
+    id: 'FT-2026-001',
+    trustName: 'The 1423 Sunset Blvd Land Trust',
+    trustDate: 'March 15, 2026',
+    trustee: 'Fiduciary Asset Protection Group, LLC',
+    successorTrustee: 'Attorney Robert Maxwell, Esq.',
+    seller: {
+      name: 'James & Mary Wilson',
+      address: '1423 Sunset Blvd, Orlando, FL 32801',
+      city: 'Orlando', county: 'Orange', state: 'FL', zip: '32801',
+      taxId: '25-2241-8903',
+      deedNames: 'James Robert Wilson & Mary Ann Wilson',
+      forwardingAddr: '890 Willowbrook Ln, Kissimmee, FL 34741',
+      email: 'jwilson@email.com', phone: '(407) 555-3821',
+      mortgageNames: 'James R. Wilson & Mary A. Wilson',
+      bank: 'Wells Fargo Home Mortgage',
+      payment: '$1,842.00/mo (PiTi)',
+      loanNumber: 'WF-****-7823',
+      payByMail: 'P.O. Box 10335, Des Moines, IA 50306',
+      payByPhone: '1-800-357-6153',
+      payOnline: 'www.wellsfargo.com/mortgage',
+      legalDesc: 'LOT 15, BLOCK 3, OF SUNRISE ESTATES PHASE II, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 42, PAGES 88-92, OF THE PUBLIC RECORDS OF ORANGE COUNTY, FLORIDA.'
+    },
+    buyer: {
+      company: 'Sunrise Holdings LLC',
+      memberName: 'Marcus & Tanya Rivera',
+      email: 'marcus@sunriseholdings.com', phone: '(407) 555-9102',
+      closingDate: 'April 2, 2026',
+      primaryRes: 'No', rentalType: 'Long-term Rental',
+      beneficiaries: 'Sunrise Holdings LLC',
+      llcBenef: 'Sunrise Holdings LLC (FL LLC, filed 2024)',
+      benefAddr: '2200 International Dr, Suite 400, Orlando, FL 32819',
+      llcEmail: 'admin@sunriseholdings.com',
+      successorBenef: 'Tanya Rivera',
+      tcPhone: '(407) 555-6600', tcEmail: 'tc@sunriseholdings.com',
+      titlePhone: '(407) 555-4400', titleEmail: 'closing@titleflorida.com',
+      titleAgent: 'Sarah Johnson', agentPhone: '(407) 555-4401', agentEmail: 'sarah@titleflorida.com'
+    },
+    insurance: {
+      policyType: 'Landlord Policy',
+      insured: 'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee: 'Wells Fargo Home Mortgage (1st Mortgagee)',
+      additionalInterest: 'James & Mary Wilson (Additional Interest)',
+      glBeneficiary: 'Sunrise Holdings LLC',
+      glSeller: 'James & Mary Wilson (declaration page sent to bank)',
+      escrow: 'Yes - Invoice sent to Wells Fargo for escrow payment',
+      poaStatus: 'Durable POA executed and notarized'
+    },
+    disclosure: {
+      signer1: 'Marcus Rivera',
+      signer2: 'Tanya Rivera',
+      signDate: 'March 14, 2026',
+      sections: 'All 5 sections acknowledged and checked',
+      ipAddress: '192.168.1.***',
+      confirmId: 'DISC-2026-001-MR'
+    }
+  },
+  '2': {
+    id: 'FT-2026-003',
+    trustName: 'The 2100 Lake Dr Land Trust',
+    trustDate: 'February 28, 2026',
+    trustee: 'Fiduciary Asset Protection Group, LLC',
+    successorTrustee: 'David Kim (self)',
+    seller: {
+      name: 'Patricia Gomez',
+      address: '2100 Lake Dr, Jacksonville, FL 32210',
+      city: 'Jacksonville', county: 'Duval', state: 'FL', zip: '32210',
+      taxId: '12-4489-2201',
+      deedNames: 'Patricia Maria Gomez',
+      forwardingAddr: '450 Beach Blvd, Apt 12B, Jacksonville, FL 32246',
+      email: 'pgomez@email.com', phone: '(904) 555-2190',
+      mortgageNames: 'Patricia M. Gomez',
+      bank: 'Bank of America',
+      payment: '$1,295.00/mo (PiTi)',
+      loanNumber: 'BOA-****-3391',
+      payByMail: 'P.O. Box 15313, Wilmington, DE 19886',
+      payByPhone: '1-800-669-6607',
+      payOnline: 'www.bankofamerica.com/mortgage',
+      legalDesc: 'LOT 8, BLOCK 7, OF LAKEWOOD TERRACE, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 18, PAGES 44-45, OF THE PUBLIC RECORDS OF DUVAL COUNTY, FLORIDA.'
+    },
+    buyer: {
+      company: '',
+      memberName: 'David Kim',
+      email: 'dkim@email.com', phone: '(904) 555-8734',
+      closingDate: 'March 20, 2026',
+      primaryRes: 'Yes', rentalType: 'Not a Rental',
+      beneficiaries: 'David Kim & Susan Kim',
+      llcBenef: 'N/A (Primary Residence - Beneficiary Domiciles)',
+      benefAddr: '2100 Lake Dr, Jacksonville, FL 32210',
+      llcEmail: '',
+      successorBenef: 'Susan Kim',
+      tcPhone: '(904) 555-1100', tcEmail: 'tc@homesolutionsjax.com',
+      titlePhone: '(904) 555-7700', titleEmail: 'closing@firstcoasttitle.com',
+      titleAgent: 'Michael Torres', agentPhone: '(904) 555-7701', agentEmail: 'mtorres@firstcoasttitle.com'
+    },
+    insurance: {
+      policyType: "Homeowner's Policy (Beneficiary Domiciles)",
+      insured: 'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee: 'Bank of America (1st Mortgagee)',
+      additionalInterest: 'Patricia Gomez (Additional Interest)',
+      glBeneficiary: 'David Kim & Susan Kim',
+      glSeller: 'Patricia Gomez (declaration page sent to bank)',
+      escrow: 'Yes - Invoice sent to Bank of America for escrow payment',
+      poaStatus: 'Durable POA executed and notarized'
+    },
+    disclosure: {
+      signer1: 'David Kim',
+      signer2: 'Susan Kim',
+      signDate: 'February 27, 2026',
+      sections: 'All 5 sections acknowledged and checked',
+      ipAddress: '10.0.0.***',
+      confirmId: 'DISC-2026-003-DK'
+    }
+  },
+  '3': {
+    id: 'FT-2026-005',
+    trustName: 'The 3344 Cypress Ln Land Trust',
+    trustDate: 'March 22, 2026',
+    trustee: 'Fiduciary Asset Protection Group, LLC',
+    successorTrustee: 'Attorney Linda Chen, Esq.',
+    seller: {
+      name: 'Angela Foster',
+      address: '3344 Cypress Ln, Sarasota, FL 34231',
+      city: 'Sarasota', county: 'Sarasota', state: 'FL', zip: '34231',
+      taxId: '08-1192-5567',
+      deedNames: 'Angela Marie Foster',
+      forwardingAddr: '1100 Main St, Unit 305, Sarasota, FL 34236',
+      email: 'afoster@email.com', phone: '(941) 555-3344',
+      mortgageNames: 'Angela M. Foster',
+      bank: 'Truist Bank',
+      payment: '$1,650.00/mo (PiTi)',
+      loanNumber: 'TR-****-8812',
+      payByMail: 'P.O. Box 27850, Richmond, VA 23261',
+      payByPhone: '1-800-226-5228',
+      payOnline: 'www.truist.com/mortgage',
+      legalDesc: 'LOT 22, OF CYPRESS GARDENS SUBDIVISION, ACCORDING TO THE PLAT THEREOF AS RECORDED IN PLAT BOOK 31, PAGE 15, OF THE PUBLIC RECORDS OF SARASOTA COUNTY, FLORIDA.'
+    },
+    buyer: {
+      company: 'Bayshore Properties LLC',
+      memberName: 'Nathan & Lisa Patel',
+      email: 'nathan@bayshoreprops.com', phone: '(941) 555-7890',
+      closingDate: 'April 10, 2026',
+      primaryRes: 'No', rentalType: 'Short-term Rental',
+      beneficiaries: 'Bayshore Properties LLC',
+      llcBenef: 'Bayshore Properties LLC (FL LLC, filed 2025)',
+      benefAddr: '500 S. Tamiami Trail, Suite 200, Sarasota, FL 34236',
+      llcEmail: 'admin@bayshoreprops.com',
+      successorBenef: 'Lisa Patel',
+      tcPhone: '(941) 555-2200', tcEmail: 'tc@bayshoreprops.com',
+      titlePhone: '(941) 555-5500', titleEmail: 'closing@gulfcoasttitle.com',
+      titleAgent: 'Jennifer Adams', agentPhone: '(941) 555-5501', agentEmail: 'jadams@gulfcoasttitle.com'
+    },
+    insurance: {
+      policyType: 'Landlord Policy (Short-term Rental)',
+      insured: 'Fiduciary Asset Protection Group, LLC (as Trustee)',
+      mortgagee: 'Truist Bank (1st Mortgagee)',
+      additionalInterest: 'Angela Foster (Additional Interest)',
+      glBeneficiary: 'Bayshore Properties LLC',
+      glSeller: 'Angela Foster (declaration page sent to bank)',
+      escrow: 'Yes - Invoice sent to Truist Bank for escrow payment',
+      poaStatus: 'Durable POA executed and notarized'
+    },
+    disclosure: {
+      signer1: 'Nathan Patel',
+      signer2: 'Lisa Patel',
+      signDate: 'March 21, 2026',
+      sections: 'All 5 sections acknowledged and checked',
+      ipAddress: '172.16.0.***',
+      confirmId: 'DISC-2026-005-NP'
+    }
+  }
+};
+
+// ═══ LOAD DEAL INTO PREVIEW ═══
+let currentDeal = null;
+
+function row(label, value) {
+  return '<div class="doc-row"><div class="doc-label">' + label + '</div><div class="doc-value">' + (value || '—') + '</div></div>';
+}
+function divider(text) {
+  return '<div class="doc-section-divider">' + text + '</div>';
+}
+
+function loadDeal() {
+  const val = document.getElementById('deal-select').value;
+  if (!val) { document.getElementById('compiled-output').style.display = 'none'; return; }
+  currentDeal = deals[val];
+  const d = currentDeal;
+  document.getElementById('compiled-output').style.display = 'block';
+  document.getElementById('deal-id-display').textContent = d.id;
+  document.getElementById('trust-date').textContent = 'Created: ' + d.trustDate;
+
+  // Trust
+  document.getElementById('trust-rows').innerHTML =
+    row('Trust Name', d.trustName) +
+    row('Trust ID', d.id) +
+    row('Date Established', d.trustDate) +
+    row('Trustee', d.trustee) +
+    row('Successor Trustee', d.successorTrustee) +
+    row('Beneficiary', d.buyer.beneficiaries) +
+    row('Property Address', d.seller.address);
+
+  // Seller
+  const s = d.seller;
+  document.getElementById('seller-rows').innerHTML =
+    divider('Property Details') +
+    row('Property Address', s.address) +
+    row('City / County / State', s.city + ', ' + s.county + ' County, ' + s.state + ' ' + s.zip) +
+    row('Tax ID / APA #', s.taxId) +
+    row('Names on Deed', s.deedNames) +
+    divider('Seller Contact') +
+    row('Seller Name(s)', s.name) +
+    row('Forwarding Address', s.forwardingAddr) +
+    row('Email', s.email) +
+    row('Phone', s.phone) +
+    divider('Mortgage & Lender') +
+    row('Names on Mortgage', s.mortgageNames) +
+    row('Bank / Mortgage Co.', s.bank) +
+    row('Monthly Payment', s.payment) +
+    row('Loan / Account #', s.loanNumber) +
+    row('Pay by Mail', s.payByMail) +
+    row('Pay by Phone', s.payByPhone) +
+    row('Pay Online', s.payOnline) +
+    divider('Legal Description') +
+    row('Legal Description', s.legalDesc);
+
+  // Buyer
+  const b = d.buyer;
+  document.getElementById('buyer-rows').innerHTML =
+    divider('Buyer Information') +
+    row('Company Name', b.company || 'N/A (Individual)') +
+    row("Member's Name", b.memberName) +
+    row('Email', b.email) +
+    row('Phone', b.phone) +
+    row('Expected Closing', b.closingDate) +
+    row('Primary Residence?', b.primaryRes) +
+    row('Rental Type', b.rentalType) +
+    divider('Beneficiary Details') +
+    row('Beneficiaries', b.beneficiaries) +
+    row('LLC Beneficiary', b.llcBenef) +
+    row('Mailing Address', b.benefAddr) +
+    row('LLC Email', b.llcEmail || 'N/A') +
+    row('Successor Beneficiary', b.successorBenef) +
+    divider('Trustee & Coordinator') +
+    row('Appointed Trustee', 'Fiduciary Asset Protection Group, LLC') +
+    row('TC Phone', b.tcPhone) +
+    row('TC Email', b.tcEmail) +
+    divider('Title Company') +
+    row('Title Co. Phone', b.titlePhone) +
+    row('Title Co. Email', b.titleEmail) +
+    row('Title Agent', b.titleAgent) +
+    row('Agent Phone', b.agentPhone) +
+    row('Agent Email', b.agentEmail);
+
+  // Insurance
+  const ins = d.insurance;
+  document.getElementById('insurance-rows').innerHTML =
+    row('Policy Type', ins.policyType) +
+    row('Named Insured', ins.insured) +
+    row('1st Mortgagee', ins.mortgagee) +
+    row('Additional Interest', ins.additionalInterest) +
+    row('GL - Beneficiary', ins.glBeneficiary) +
+    row('GL - Seller', ins.glSeller) +
+    row('Escrow Payment', ins.escrow) +
+    row('POA Status', ins.poaStatus);
+
+  // Disclosure
+  const disc = d.disclosure;
+  document.getElementById('disclosure-rows').innerHTML =
+    row('Signer 1', disc.signer1) +
+    row('Signer 2', disc.signer2 || 'N/A') +
+    row('Date Signed', disc.signDate) +
+    row('Sections Acknowledged', disc.sections) +
+    row('Confirmation ID', disc.confirmId);
+
+  window.scrollTo({ top: 300, behavior: 'smooth' });
+}
+
+// ═══ PDF GENERATION ═══
+function generatePDF() {
+  if (!currentDeal) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+  const d = currentDeal;
+  const W = 215.9, H = 279.4;
+  const margin = 20;
+  const contentW = W - margin * 2;
+  let y = 0;
+
+  // Colors
+  const gold = [201, 168, 76];
+  const darkBg = [10, 14, 26];
+  const navy = [17, 24, 39];
+  const lightText = [241, 245, 249];
+  const mutedText = [148, 163, 184];
+  const white = [255, 255, 255];
+  const darkText = [30, 41, 59];
+
+  function newPage() {
+    doc.addPage();
+    y = margin;
+  }
+
+  function checkSpace(needed) {
+    if (y + needed > H - 25) newPage();
+  }
+
+  // ═══ COVER PAGE ═══
+  doc.setFillColor(...darkBg);
+  doc.rect(0, 0, W, H, 'F');
+
+  // Gold accent bar
+  doc.setFillColor(...gold);
+  doc.rect(0, 0, W, 4, 'F');
+
+  // Shield icon area
+  doc.setFillColor(gold[0], gold[1], gold[2]);
+  doc.roundedRect(W/2 - 20, 50, 40, 40, 6, 6, 'F');
+  doc.setFillColor(37, 99, 235);
+  doc.roundedRect(W/2 - 16, 54, 32, 32, 4, 4, 'F');
+  doc.setTextColor(...[232, 212, 139]);
+  doc.setFontSize(28);
+  doc.setFont('helvetica', 'bold');
+  doc.text('F', W/2, 76, { align: 'center' });
+
+  // Company name
+  doc.setTextColor(...gold);
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.text('FIDUCIARY ASSET', W/2, 108, { align: 'center' });
+  doc.setFontSize(11);
+  doc.setTextColor(...mutedText);
+  doc.setFont('helvetica', 'normal');
+  doc.text('PROTECTION GROUP LLC', W/2, 116, { align: 'center' });
+
+  // Divider line
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.5);
+  doc.line(W/2 - 40, 126, W/2 + 40, 126);
+
+  // Title
+  doc.setTextColor(...lightText);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('COMBINED TRANSACTION', W/2, 142, { align: 'center' });
+  doc.text('DOCUMENT PACKAGE', W/2, 150, { align: 'center' });
+
+  // Trust name
+  doc.setTextColor(...gold);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'normal');
+  doc.text(d.trustName, W/2, 166, { align: 'center' });
+
+  // Details box
+  doc.setFillColor(navy[0], navy[1], navy[2]);
+  doc.roundedRect(margin + 20, 180, contentW - 40, 52, 4, 4, 'F');
+  doc.setDrawColor(30, 41, 59);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(margin + 20, 180, contentW - 40, 52, 4, 4, 'S');
+
+  doc.setFontSize(10);
+  doc.setTextColor(...mutedText);
+  doc.text('TRANSACTION ID', margin + 30, 192);
+  doc.text('PROPERTY', margin + 30, 204);
+  doc.text('DATE COMPILED', margin + 30, 216);
+  doc.text('STATUS', margin + 30, 228);
+
+  doc.setTextColor(...lightText);
+  doc.setFont('helvetica', 'bold');
+  doc.text(d.id, margin + 75, 192);
+  doc.text(d.seller.address, margin + 75, 204);
+  doc.text(new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }), margin + 75, 216);
+  doc.setTextColor(16, 185, 129);
+  doc.text('READY TO CLOSE', margin + 75, 228);
+
+  // Footer
+  doc.setTextColor(...mutedText);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.text('CONFIDENTIAL - FOR AUTHORIZED USE ONLY', W/2, H - 30, { align: 'center' });
+  doc.text('Document Assistance Only - Not Legal Advice', W/2, H - 24, { align: 'center' });
+  doc.text('Eric Sandhaus (407) 335-6591  |  Barry Sandhaus (407) 592-4166', W/2, H - 18, { align: 'center' });
+
+  // ═══ CONTENT PAGES (white background) ═══
+  function sectionHeader(title, icon) {
+    checkSpace(20);
+    doc.setFillColor(...gold);
+    doc.rect(margin, y, contentW, 12, 'F');
+    doc.setTextColor(...darkBg);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(title.toUpperCase(), margin + 6, y + 8.5);
+    y += 18;
+  }
+
+  function subHeader(text) {
+    checkSpace(12);
+    doc.setFillColor(245, 245, 245);
+    doc.rect(margin, y, contentW, 8, 'F');
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text(text.toUpperCase(), margin + 4, y + 5.5);
+    y += 10;
+  }
+
+  function dataRow(label, value) {
+    checkSpace(9);
+    const isEven = Math.floor(y) % 2 === 0;
+    if (isEven) {
+      doc.setFillColor(250, 250, 252);
+      doc.rect(margin, y, contentW, 7.5, 'F');
+    }
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text(label, margin + 4, y + 5);
+    doc.setTextColor(...darkText);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    // Wrap long values
+    const maxValW = contentW - 60;
+    const lines = doc.splitTextToSize(value || '—', maxValW);
+    doc.text(lines, margin + 56, y + 5);
+    const extra = (lines.length - 1) * 4;
+    y += 8 + extra;
+  }
+
+  function pageFooter(pageNum) {
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.2);
+    doc.line(margin, H - 18, W - margin, H - 18);
+    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(7);
+    doc.text('Fiduciary Asset Protection Group, LLC  |  ' + d.id + '  |  ' + d.trustName, margin, H - 13);
+    doc.text('Page ' + pageNum, W - margin, H - 13, { align: 'right' });
+  }
+
+  // PAGE 2 - Trust Overview + Seller
+  newPage();
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, W, H, 'F');
+  y = margin;
+
+  sectionHeader('Land Trust Overview');
+  dataRow('Trust Name', d.trustName);
+  dataRow('Transaction ID', d.id);
+  dataRow('Date Established', d.trustDate);
+  dataRow('Trustee', d.trustee);
+  dataRow('Successor Trustee', d.successorTrustee);
+  dataRow('Beneficiary', d.buyer.beneficiaries);
+  dataRow('Property Address', d.seller.address);
+  y += 6;
+
+  sectionHeader('Seller Information');
+  subHeader('Property Details');
+  dataRow('Property Address', d.seller.address);
+  dataRow('City / County / State', d.seller.city + ', ' + d.seller.county + ' County, ' + d.seller.state + ' ' + d.seller.zip);
+  dataRow('Tax ID / APA #', d.seller.taxId);
+  dataRow('Names on Deed', d.seller.deedNames);
+  subHeader('Seller Contact');
+  dataRow('Seller Name(s)', d.seller.name);
+  dataRow('Forwarding Address', d.seller.forwardingAddr);
+  dataRow('Email', d.seller.email);
+  dataRow('Phone', d.seller.phone);
+  subHeader('Mortgage & Lender');
+  dataRow('Names on Mortgage', d.seller.mortgageNames);
+  dataRow('Bank / Mortgage Co.', d.seller.bank);
+  dataRow('Monthly Payment', d.seller.payment);
+  dataRow('Loan / Account #', d.seller.loanNumber);
+  dataRow('Pay by Mail', d.seller.payByMail);
+  dataRow('Pay by Phone', d.seller.payByPhone);
+  dataRow('Pay Online', d.seller.payOnline);
+  subHeader('Legal Description');
+  dataRow('Legal Description', d.seller.legalDesc);
+  pageFooter(2);
+
+  // PAGE 3 - Buyer
+  newPage();
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, W, H, 'F');
+  y = margin;
+
+  sectionHeader('Buyer Information');
+  subHeader('Buyer Details');
+  dataRow('Company Name', d.buyer.company || 'N/A (Individual)');
+  dataRow("Member's Name", d.buyer.memberName);
+  dataRow('Email', d.buyer.email);
+  dataRow('Phone', d.buyer.phone);
+  dataRow('Expected Closing', d.buyer.closingDate);
+  dataRow('Primary Residence?', d.buyer.primaryRes);
+  dataRow('Rental Type', d.buyer.rentalType);
+  subHeader('Beneficiary Details');
+  dataRow('Beneficiaries', d.buyer.beneficiaries);
+  dataRow('LLC Beneficiary', d.buyer.llcBenef);
+  dataRow('Mailing Address', d.buyer.benefAddr);
+  dataRow('LLC Email', d.buyer.llcEmail || 'N/A');
+  dataRow('Successor Beneficiary', d.buyer.successorBenef);
+  subHeader('Trustee & Coordinator');
+  dataRow('Appointed Trustee', 'Fiduciary Asset Protection Group, LLC');
+  dataRow('TC Phone', d.buyer.tcPhone);
+  dataRow('TC Email', d.buyer.tcEmail);
+  subHeader('Title Company');
+  dataRow('Title Co. Phone', d.buyer.titlePhone);
+  dataRow('Title Co. Email', d.buyer.titleEmail);
+  dataRow('Title Agent', d.buyer.titleAgent);
+  dataRow('Agent Phone', d.buyer.agentPhone);
+  dataRow('Agent Email', d.buyer.agentEmail);
+  y += 6;
+
+  sectionHeader('Insurance Configuration');
+  dataRow('Policy Type', d.insurance.policyType);
+  dataRow('Named Insured', d.insurance.insured);
+  dataRow('1st Mortgagee', d.insurance.mortgagee);
+  dataRow('Additional Interest', d.insurance.additionalInterest);
+  dataRow('GL - Beneficiary', d.insurance.glBeneficiary);
+  dataRow('GL - Seller', d.insurance.glSeller);
+  dataRow('Escrow Payment', d.insurance.escrow);
+  dataRow('POA Status', d.insurance.poaStatus);
+  y += 6;
+
+  sectionHeader('Disclosure & E-Signature Record');
+  dataRow('Signer 1', d.disclosure.signer1);
+  dataRow('Signer 2', d.disclosure.signer2 || 'N/A');
+  dataRow('Date Signed', d.disclosure.signDate);
+  dataRow('Sections Acknowledged', d.disclosure.sections);
+  dataRow('Confirmation ID', d.disclosure.confirmId);
+
+  // Signature lines
+  y += 16;
+  checkSpace(40);
+  doc.setDrawColor(...darkText);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, margin + 70, y);
+  doc.line(W/2 + 5, y, W - margin, y);
+  doc.setTextColor(...mutedText);
+  doc.setFontSize(8);
+  doc.text('Authorized Signature', margin, y + 5);
+  doc.text('Date', W/2 + 5, y + 5);
+  y += 16;
+  doc.line(margin, y, margin + 70, y);
+  doc.line(W/2 + 5, y, W - margin, y);
+  doc.text('Trustee Signature', margin, y + 5);
+  doc.text('Date', W/2 + 5, y + 5);
+
+  pageFooter(3);
+
+  // Save
+  doc.save(d.id + '_Combined_Document_Package.pdf');
+}
+</script>
+</body>
+</html>
