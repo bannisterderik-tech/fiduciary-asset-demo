@@ -21,6 +21,41 @@ a{text-decoration:none;color:inherit}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2)}50%{box-shadow:0 0 40px rgba(201,168,76,0.4)}}
 @keyframes pulseGreen{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.2)}50%{box-shadow:0 0 40px rgba(16,185,129,0.4)}}
+@keyframes aurora{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(3deg) scale(1.02)}50%{transform:rotate(-2deg) scale(1.04)}75%{transform:rotate(1deg) scale(1.01)}100%{transform:rotate(0deg) scale(1)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes borderGlow{0%{border-color:rgba(201,168,76,0.2)}50%{border-color:rgba(201,168,76,0.5)}100%{border-color:rgba(201,168,76,0.2)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes particle{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) translateX(20px);opacity:0}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(0.92);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal-scale.visible{opacity:1;transform:scale(1)}
+
+/* AURORA BACKGROUND */
+.aurora-bg{position:absolute;inset:-50%;width:200%;height:200%;background:conic-gradient(from 0deg at 50% 50%,rgba(201,168,76,0.06) 0%,rgba(37,99,235,0.04) 25%,rgba(139,92,246,0.04) 50%,rgba(16,185,129,0.04) 75%,rgba(201,168,76,0.06) 100%);animation:aurora 20s ease-in-out infinite;pointer-events:none}
+
+/* GLASS MORPHISM */
+.glass{background:rgba(17,24,39,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(201,168,76,0.12)}
+
+/* GRADIENT BORDER ANIMATION */
+.glow-border{position:relative;overflow:hidden}
+.glow-border::before{content:'';position:absolute;inset:-2px;background:conic-gradient(from 0deg,#C9A84C,#2563EB,#10B981,#8B5CF6,#C9A84C);border-radius:inherit;z-index:-1;animation:gradientShift 4s ease infinite;background-size:200% 200%;opacity:0;transition:opacity .4s}
+.glow-border:hover::before{opacity:1}
+
+/* ANIMATED COUNTER */
+.counter{display:inline-block}
+
+/* PARTICLES CONTAINER */
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(201,168,76,0.4);animation:particle linear infinite}
+
+/* TEAM SECTION */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:800px;margin:0 auto}
 
 .fade-up{animation:fadeUp .8s ease-out forwards}
 .fd1{animation:fadeUp .8s ease-out .1s forwards;opacity:0}
@@ -134,7 +169,7 @@ a{text-decoration:none;color:inherit}
 .sig-preview{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:#C9A84C;min-height:40px;border-bottom:2px solid rgba(201,168,76,0.3);padding-bottom:8px;margin-top:8px}
 
 /* DASHBOARD */
-.stat-card{padding:28px;border-radius:16px;background:#111827;border:1px solid #1E293B;transition:all .3s ease}
+.stat-card{padding:28px;border-radius:16px;background:rgba(17,24,39,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(201,168,76,0.12);transition:all .3s ease}
 .stat-card:hover{transform:translateY(-2px)}
 .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px}
 .stat-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin-bottom:4px}
@@ -271,10 +306,10 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
     </div>
     <div class="nav-links">
       <button class="nav-link active" data-view="home" onclick="showView('home')">&#127968; Home</button>
+      <button class="nav-link" data-view="disclosure" onclick="showView('disclosure')">&#9989; Disclosure</button>
       <button class="nav-link" data-view="seller" onclick="showView('seller')">&#128196; Seller Form</button>
       <button class="nav-link" data-view="buyer" onclick="showView('buyer')">&#128101; Buyer Form</button>
       <button class="nav-link" data-view="insurance" onclick="showView('insurance')">&#128737; Insurance</button>
-      <button class="nav-link" data-view="disclosure" onclick="showView('disclosure')">&#9989; Disclosure</button>
       <button class="nav-link" data-view="dashboard" onclick="showView('dashboard')">&#128202; Dashboard</button>
     </div>
     <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()">
@@ -286,16 +321,18 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
   <button class="nav-link active" data-view="home" onclick="mobileNav('home')">&#127968; Home</button>
+  <button class="nav-link" data-view="disclosure" onclick="mobileNav('disclosure')">&#9989; Disclosure</button>
   <button class="nav-link" data-view="seller" onclick="mobileNav('seller')">&#128196; Seller Form</button>
   <button class="nav-link" data-view="buyer" onclick="mobileNav('buyer')">&#128101; Buyer Form</button>
   <button class="nav-link" data-view="insurance" onclick="mobileNav('insurance')">&#128737; Insurance</button>
-  <button class="nav-link" data-view="disclosure" onclick="mobileNav('disclosure')">&#9989; Disclosure</button>
   <button class="nav-link" data-view="dashboard" onclick="mobileNav('dashboard')">&#128202; Dashboard</button>
 </div>
 
 <!-- ═══════════════════════ HOME ═══════════════════════ -->
 <div class="view active" id="view-home">
   <div style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
+    <div class="aurora-bg"></div>
+    <div class="particles" id="heroParticles"></div>
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(201,168,76,0.08) 0%,transparent 60%)"></div>
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 80%,rgba(37,99,235,0.06) 0%,transparent 60%)"></div>
     <div style="position:absolute;top:10%;right:5%;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,168,76,0.06);animation:float 8s ease-in-out infinite"></div>
@@ -360,7 +397,7 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
     </div>
 
     <!-- ═══ PROCESS MAP ═══ -->
-    <div style="max-width:1200px;margin:0 auto;padding:80px 40px;position:relative">
+    <div class="reveal" style="max-width:1200px;margin:0 auto;padding:80px 40px;position:relative">
       <div style="text-align:center;margin-bottom:60px">
         <span class="section-tag" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA">&#128736; Process Map</span>
         <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">How a Subject-To Transaction Works</h2>
@@ -369,11 +406,32 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
 
       <!-- PROCESS TIMELINE -->
       <div class="process-map">
-        <!-- Step 1 -->
+        <!-- Step 1 - Disclosure & E-Sign FIRST -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.4)">
+            <div class="pm-num" style="background:#8B5CF6;color:#fff">1</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(139,92,246,0.1)">&#9989;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#A78BFA">Disclosure & E-Signature</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Before anything begins, the client reviews all five sections of the Disclosure & Acknowledgment Agreement, confirms understanding that we provide document assistance only — not legal advice — and captures electronic signatures.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">5-Section Review</span>
+                <span class="pm-tag">Scope of Service</span>
+                <span class="pm-tag">No Legal Advice</span>
+                <span class="pm-tag">E-Signature</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 - Seller Intake -->
         <div class="pm-step">
           <div class="pm-connector"></div>
           <div class="pm-node" style="background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4)">
-            <div class="pm-num" style="background:#C9A84C;color:#0A0E1A">1</div>
+            <div class="pm-num" style="background:#C9A84C;color:#0A0E1A">2</div>
           </div>
           <div class="pm-card">
             <div class="pm-icon" style="background:rgba(201,168,76,0.1)">&#128196;</div>
@@ -390,11 +448,11 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
           </div>
         </div>
 
-        <!-- Step 2 -->
+        <!-- Step 3 - Buyer Intake -->
         <div class="pm-step">
           <div class="pm-connector"></div>
           <div class="pm-node" style="background:rgba(37,99,235,0.15);border-color:rgba(37,99,235,0.4)">
-            <div class="pm-num" style="background:#2563EB;color:#fff">2</div>
+            <div class="pm-num" style="background:#2563EB;color:#fff">3</div>
           </div>
           <div class="pm-card">
             <div class="pm-icon" style="background:rgba(37,99,235,0.1)">&#128101;</div>
@@ -411,11 +469,11 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
           </div>
         </div>
 
-        <!-- Step 3 -->
+        <!-- Step 4 - Insurance -->
         <div class="pm-step">
           <div class="pm-connector"></div>
           <div class="pm-node" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.4)">
-            <div class="pm-num" style="background:#10B981;color:#fff">3</div>
+            <div class="pm-num" style="background:#10B981;color:#fff">4</div>
           </div>
           <div class="pm-card">
             <div class="pm-icon" style="background:rgba(16,185,129,0.1)">&#128737;</div>
@@ -427,27 +485,6 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
                 <span class="pm-tag">Insured Parties</span>
                 <span class="pm-tag">Mortgagee Setup</span>
                 <span class="pm-tag">POA Verification</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="pm-step">
-          <div class="pm-connector"></div>
-          <div class="pm-node" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.4)">
-            <div class="pm-num" style="background:#8B5CF6;color:#fff">4</div>
-          </div>
-          <div class="pm-card">
-            <div class="pm-icon" style="background:rgba(139,92,246,0.1)">&#9989;</div>
-            <div class="pm-content">
-              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#A78BFA">Disclosure & E-Signature</h4>
-              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Review all five sections of the Disclosure & Acknowledgment Agreement, confirm understanding of services, and capture electronic signatures.</p>
-              <div class="pm-tags">
-                <span class="pm-tag">5-Section Review</span>
-                <span class="pm-tag">Scope of Service</span>
-                <span class="pm-tag">No Legal Advice</span>
-                <span class="pm-tag">E-Signature</span>
               </div>
             </div>
           </div>
@@ -496,7 +533,7 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
     </div>
 
     <!-- ═══ WHY LAND TRUSTS ═══ -->
-    <div style="max-width:1200px;margin:0 auto;padding:60px 40px 80px">
+    <div class="reveal" style="max-width:1200px;margin:0 auto;padding:60px 40px 80px">
       <div style="text-align:center;margin-bottom:48px">
         <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128274; Asset Protection</span>
         <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">Why Use a Land Trust?</h2>
@@ -537,12 +574,12 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
     </div>
 
     <!-- ═══ MEET THE TEAM ═══ -->
-    <div style="max-width:1200px;margin:0 auto;padding:40px 40px 80px">
+    <div class="reveal" style="max-width:1200px;margin:0 auto;padding:40px 40px 80px">
       <div style="text-align:center;margin-bottom:48px">
         <span class="section-tag" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA">&#128101; Our Team</span>
         <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">44+ Years of Combined Experience</h2>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:800px;margin:0 auto">
+      <div class="team-grid">
         <div class="card" style="text-align:center;padding:40px 32px">
           <div style="width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;border:2px solid rgba(201,168,76,0.3)">B</div>
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:4px">Barry Sandhaus</h3>
@@ -563,7 +600,7 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
     </div>
 
     <!-- ═══ CTA SECTION ═══ -->
-    <div style="max-width:1200px;margin:0 auto;padding:40px 40px 100px">
+    <div class="reveal-scale" style="max-width:1200px;margin:0 auto;padding:40px 40px 100px">
       <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08) 0%,rgba(37,99,235,0.08) 100%);border:1px solid rgba(201,168,76,0.2);border-radius:24px;padding:clamp(40px,6vw,80px);text-align:center;position:relative;overflow:hidden">
         <div style="position:absolute;top:-50%;right:-20%;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,168,76,0.06);pointer-events:none"></div>
         <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:600;margin-bottom:16px;position:relative">Ready to Protect Your <span class="shimmer-text">Investment?</span></h2>
@@ -1345,6 +1382,32 @@ function generatePDF() {
 
   doc.save(d.id+'_Combined_Package.pdf');
 }
+
+// ═══ SCROLL REVEAL ═══
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }});
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-scale').forEach(el => revealObserver.observe(el));
+
+// ═══ PARTICLES ═══
+function spawnParticles(containerId, count) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.bottom = '-10px';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 15) + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+    p.style.opacity = 0.2 + Math.random() * 0.4;
+    const colors = ['rgba(201,168,76,0.5)','rgba(37,99,235,0.4)','rgba(16,185,129,0.4)','rgba(139,92,246,0.4)'];
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.appendChild(p);
+  }
+}
+spawnParticles('heroParticles', 25);
 
 // ═══ INIT ═══
 renderSellerSteps();
