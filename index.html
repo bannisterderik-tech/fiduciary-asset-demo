@@ -164,6 +164,30 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
 /* SVG SHIELD INLINE */
 .shield-svg{display:inline-block;vertical-align:middle}
 
+/* ═══ PROCESS MAP ═══ */
+.process-map{position:relative;max-width:700px;margin:0 auto}
+.pm-step{position:relative;display:flex;gap:24px;padding-bottom:12px}
+.pm-step:last-child{padding-bottom:0}
+.pm-connector{position:absolute;left:23px;top:52px;bottom:0;width:2px;background:linear-gradient(to bottom,rgba(201,168,76,0.4),rgba(30,41,59,0.6))}
+.pm-step:last-child .pm-connector{display:none}
+.pm-node{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid;z-index:1;position:relative}
+.pm-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.pm-card{flex:1;background:#111827;border:1px solid #1E293B;border-radius:16px;padding:24px;display:flex;gap:16px;transition:all .4s ease}
+.pm-card:hover{border-color:rgba(201,168,76,0.3);transform:translateX(4px);box-shadow:0 0 30px rgba(201,168,76,0.08)}
+.pm-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pm-content{flex:1;min-width:0}
+.pm-tags{display:flex;flex-wrap:wrap;gap:6px}
+.pm-tag{font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(201,168,76,0.08);color:#C9A84C;border:1px solid rgba(201,168,76,0.2)}
+
+@media(max-width:768px){
+  .pm-step{gap:14px}
+  .pm-connector{left:17px}
+  .pm-node{width:36px;height:36px}
+  .pm-num{width:24px;height:24px;font-size:11px}
+  .pm-card{flex-direction:column;padding:18px}
+  .pm-icon{width:36px;height:36px;font-size:16px}
+}
+
 /* ═══ SLIDE-OUT PANEL ═══ */
 .panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:2000;opacity:0;pointer-events:none;transition:opacity .35s ease}
 .panel-overlay.open{opacity:1;pointer-events:all}
@@ -334,6 +358,229 @@ footer{border-top:1px solid #1E293B;padding:48px 40px;text-align:center}
         </div>
       </div>
     </div>
+
+    <!-- ═══ PROCESS MAP ═══ -->
+    <div style="max-width:1200px;margin:0 auto;padding:80px 40px;position:relative">
+      <div style="text-align:center;margin-bottom:60px">
+        <span class="section-tag" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA">&#128736; Process Map</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">How a Subject-To Transaction Works</h2>
+        <p style="color:#94A3B8;font-size:16px;margin-top:10px;max-width:600px;margin-left:auto;margin-right:auto">From initial intake to closing — every step managed through our platform</p>
+      </div>
+
+      <!-- PROCESS TIMELINE -->
+      <div class="process-map">
+        <!-- Step 1 -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4)">
+            <div class="pm-num" style="background:#C9A84C;color:#0A0E1A">1</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(201,168,76,0.1)">&#128196;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#C9A84C">Seller Intake</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Collect all property details, seller contact information, mortgage and lender data, and the legal description from the title commitment.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">Property Details</span>
+                <span class="pm-tag">Seller Info</span>
+                <span class="pm-tag">Mortgage Data</span>
+                <span class="pm-tag">Legal Description</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(37,99,235,0.15);border-color:rgba(37,99,235,0.4)">
+            <div class="pm-num" style="background:#2563EB;color:#fff">2</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(37,99,235,0.1)">&#128101;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#60A5FA">Buyer Intake</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Gather buyer and beneficiary information, assign the trustee, connect with the transaction coordinator, and confirm the title company.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">Buyer Details</span>
+                <span class="pm-tag">Beneficiary</span>
+                <span class="pm-tag">Trustee Assignment</span>
+                <span class="pm-tag">Title Company</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.4)">
+            <div class="pm-num" style="background:#10B981;color:#fff">3</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(16,185,129,0.1)">&#128737;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#10B981">Insurance Configuration</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Select the correct policy type, name the Trustee as insured, set up the mortgagee, configure additional interest, and verify the escrow payment flow.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">Policy Selection</span>
+                <span class="pm-tag">Insured Parties</span>
+                <span class="pm-tag">Mortgagee Setup</span>
+                <span class="pm-tag">POA Verification</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(139,92,246,0.15);border-color:rgba(139,92,246,0.4)">
+            <div class="pm-num" style="background:#8B5CF6;color:#fff">4</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(139,92,246,0.1)">&#9989;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#A78BFA">Disclosure & E-Signature</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">Review all five sections of the Disclosure & Acknowledgment Agreement, confirm understanding of services, and capture electronic signatures.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">5-Section Review</span>
+                <span class="pm-tag">Scope of Service</span>
+                <span class="pm-tag">No Legal Advice</span>
+                <span class="pm-tag">E-Signature</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="pm-step">
+          <div class="pm-connector"></div>
+          <div class="pm-node" style="background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.4)">
+            <div class="pm-num" style="background:#F59E0B;color:#0A0E1A">5</div>
+          </div>
+          <div class="pm-card">
+            <div class="pm-icon" style="background:rgba(245,158,11,0.1)">&#128451;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#F59E0B">Document Compilation</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">All seller, buyer, insurance, and disclosure data is compiled into a single comprehensive transaction package. Review every detail in the side panel before generating the final PDF.</p>
+              <div class="pm-tags">
+                <span class="pm-tag">Combined Review</span>
+                <span class="pm-tag">PDF Generation</span>
+                <span class="pm-tag">Digital Delivery</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="pm-step">
+          <div class="pm-connector" style="display:none"></div>
+          <div class="pm-node" style="background:rgba(16,185,129,0.2);border-color:#10B981;animation:pulseGreen 2s ease infinite">
+            <div class="pm-num" style="background:#10B981;color:#fff">&#10003;</div>
+          </div>
+          <div class="pm-card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.04)">
+            <div class="pm-icon" style="background:rgba(16,185,129,0.15)">&#127942;</div>
+            <div class="pm-content">
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#10B981">Ready to Close</h4>
+              <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:12px">The complete document package is delivered to the title company. The land trust is filed, the deed is transferred, and the transaction is recorded on the dashboard.</p>
+              <div class="pm-tags">
+                <span class="pm-tag" style="background:rgba(16,185,129,0.1);color:#10B981;border-color:rgba(16,185,129,0.3)">Title Company Delivery</span>
+                <span class="pm-tag" style="background:rgba(16,185,129,0.1);color:#10B981;border-color:rgba(16,185,129,0.3)">Trust Filed</span>
+                <span class="pm-tag" style="background:rgba(16,185,129,0.1);color:#10B981;border-color:rgba(16,185,129,0.3)">Deed Transferred</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ WHY LAND TRUSTS ═══ -->
+    <div style="max-width:1200px;margin:0 auto;padding:60px 40px 80px">
+      <div style="text-align:center;margin-bottom:48px">
+        <span class="section-tag" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);color:#C9A84C">&#128274; Asset Protection</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">Why Use a Land Trust?</h2>
+        <p style="color:#94A3B8;font-size:16px;margin-top:10px;max-width:600px;margin-left:auto;margin-right:auto">Land trusts provide powerful benefits for real estate investors and homeowners alike</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <div class="card" style="border-left:3px solid #C9A84C">
+          <div style="font-size:28px;margin-bottom:16px">&#128737;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Due-on-Sale Protection</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Transferring property into a land trust is specifically exempted from triggering the due-on-sale clause under the Garn-St. Germain Act of 1982.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #2563EB">
+          <div style="font-size:28px;margin-bottom:16px">&#128373;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Privacy & Anonymity</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">The trust name appears on public records instead of your personal name, keeping your ownership private from public databases and title searches.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #10B981">
+          <div style="font-size:28px;margin-bottom:16px">&#9878;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Lawsuit Protection</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Assets held in a land trust are more difficult to discover and attach in lawsuits, providing an additional layer of protection against frivolous claims.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #8B5CF6">
+          <div style="font-size:28px;margin-bottom:16px">&#128260;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Easy Transfers</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Change beneficial interest without recording a new deed. Transfer ownership quickly and privately by simply assigning the beneficiary interest.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #F59E0B">
+          <div style="font-size:28px;margin-bottom:16px">&#128176;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Avoid Probate</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Property held in a land trust passes directly to successor beneficiaries without going through the costly and time-consuming probate process.</p>
+        </div>
+        <div class="card" style="border-left:3px solid #EC4899">
+          <div style="font-size:28px;margin-bottom:16px">&#127970;</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:10px">Multiple Properties</h3>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7">Each property can be held in its own separate trust, isolating liability. A problem with one property doesn't affect your other holdings.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MEET THE TEAM ═══ -->
+    <div style="max-width:1200px;margin:0 auto;padding:40px 40px 80px">
+      <div style="text-align:center;margin-bottom:48px">
+        <span class="section-tag" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.3);color:#60A5FA">&#128101; Our Team</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin-top:12px">44+ Years of Combined Experience</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:800px;margin:0 auto">
+        <div class="card" style="text-align:center;padding:40px 32px">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;border:2px solid rgba(201,168,76,0.3)">B</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:4px">Barry Sandhaus</h3>
+          <p style="color:#C9A84C;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px">Founder &bull; 44+ Years</p>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:16px">Decades of experience in land trust formation, real estate asset protection, and subject-to transaction structuring.</p>
+          <div style="font-size:14px;color:#64748B">&#128222; (407) 592-4166</div>
+          <div style="font-size:13px;color:#64748B;margin-top:4px">Barry@FiduciaryAssetProtectionGroupLLC.com</div>
+        </div>
+        <div class="card" style="text-align:center;padding:40px 32px">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(37,99,235,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;border:2px solid rgba(37,99,235,0.3)">E</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:4px">Eric Sandhaus</h3>
+          <p style="color:#60A5FA;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px">Partner &bull; 15+ Years</p>
+          <p style="font-size:14px;color:#94A3B8;line-height:1.7;margin-bottom:16px">Specializing in digital document management, insurance coordination, and streamlined closing processes for investors.</p>
+          <div style="font-size:14px;color:#64748B">&#128222; (407) 335-6591</div>
+          <div style="font-size:13px;color:#64748B;margin-top:4px">Eric@FiduciaryAssetProtectionGroupLLC.com</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CTA SECTION ═══ -->
+    <div style="max-width:1200px;margin:0 auto;padding:40px 40px 100px">
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.08) 0%,rgba(37,99,235,0.08) 100%);border:1px solid rgba(201,168,76,0.2);border-radius:24px;padding:clamp(40px,6vw,80px);text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-50%;right:-20%;width:500px;height:500px;border-radius:50%;border:1px solid rgba(201,168,76,0.06);pointer-events:none"></div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,44px);font-weight:600;margin-bottom:16px;position:relative">Ready to Protect Your <span class="shimmer-text">Investment?</span></h2>
+        <p style="color:#94A3B8;font-size:clamp(15px,1.5vw,18px);max-width:560px;margin:0 auto 36px;line-height:1.7;position:relative">Start your first transaction today. Our guided digital platform walks you through every step — from seller intake to closing.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative">
+          <button class="btn btn-gold" onclick="showView('seller')" style="font-size:16px;padding:16px 36px">Start a Transaction &#8594;</button>
+          <button class="btn btn-outline" onclick="showView('dashboard')" style="font-size:16px;padding:16px 36px">View Dashboard &#128202;</button>
+        </div>
+        <div style="margin-top:32px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative">
+          <div style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:6px"><span style="color:#10B981">&#10003;</span> No Legal Advice</div>
+          <div style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:6px"><span style="color:#10B981">&#10003;</span> 100% Digital</div>
+          <div style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:6px"><span style="color:#10B981">&#10003;</span> 24hr Turnaround</div>
+          <div style="font-size:13px;color:#64748B;display:flex;align-items:center;gap:6px"><span style="color:#10B981">&#10003;</span> 44+ Years Experience</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
